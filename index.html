@@ -136,38 +136,38 @@
     
     <div class="input-group">
         <label>Toplam Brüt Giriş Tutarı (KDV Hariç)</label>
-        <input type="text" id="brut" placeholder="Örn: 1.550,25" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
+        <input type="text" id="brut" placeholder="" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
     </div>
 
     <div class="input-group">
         <label>Ürün Miktarı (Adet / Adet Sayısı)</label>
-        <input type="text" id="miktar" placeholder="Örn: 1,250" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
+        <input type="text" id="miktar" placeholder="" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
     </div>
 
     <div class="input-group">
         <label>2. Ürün Miktarı (Adet / Adet Sayısı)</label>
-        <input type="text" id="miktar2" placeholder="Örn: 1,250" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
+        <input type="text" id="miktar2" placeholder="" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
     </div>
     
     <div class="row-half">
         <div class="input-group">
-            <label>İskonto 1 (%)</label>
-            <input type="text" id="isk1" placeholder="0" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
+            <label>İskonto 1</label>
+            <input type="text" id="isk1" placeholder="" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
         </div>
         <div class="input-group">
-            <label>İskonto 2 (%)</label>
-            <input type="text" id="isk2" placeholder="0" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
+            <label>İskonto 2</label>
+            <input type="text" id="isk2" placeholder="" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
         </div>
     </div>
 
     <div class="row-half">
         <div class="input-group">
-            <label>İskonto 3 (%)</label>
-            <input type="text" id="isk3" placeholder="0" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
+            <label>İskonto 3</label>
+            <input type="text" id="isk3" placeholder="" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
         </div>
         <div class="input-group">
-            <label>İskonto 4 (%)</label>
-            <input type="text" id="isk4" placeholder="0" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
+            <label>İskonto 4</label>
+            <input type="text" id="isk4" placeholder="" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
         </div>
     </div>
 
@@ -223,74 +223,19 @@ function temizleVeCevirTutar(id) {
     return isNaN(sayi) ? 0 : sayi;
 }
 
+function temizleVeCevirIskonto(id) {
+    var element = document.getElementById(id);
+    if (!element) return 0;
+    var val = element.value.trim();
+    if (val === "") return 0;
+    var temiz = val.replace(',', '.');
+    var sayi = parseFloat(temiz);
+    return isNaN(sayi) ? 0 : sayi;
+}
+
 function temizleVeCevirMiktar(id) {
     var element = document.getElementById(id);
     if (!element) return 0;
     var val = element.value.trim();
     if (val === "") return 0;
     var temiz = val.replace(/,/g, '');
-    var sayi = parseFloat(temiz);
-    return isNaN(sayi) ? 0 : sayi;
-}
-
-function hesaplaSatis() {
-    var brut = temizleVeCevirTutar('brut');
-    var miktar1 = temizleVeCevirMiktar('miktar');
-    var miktar2 = temizleVeCevirMiktar('miktar2');
-    var isk1 = temizleVeCevirTutar('isk1');
-    var isk2 = temizleVeCevirTutar('isk2');
-    var isk3 = temizleVeCevirTutar('isk3');
-    var isk4 = temizleVeCevirTutar('isk4');
-    
-    var karOran = parseFloat(document.getElementById('kar').value) || 0;
-    var kdvOran = parseFloat(document.getElementById('kdv').value) || 0;
-
-    if (brut <= 0) {
-        alert("Lütfen geçerli bir toplam brüt tutar giriniz.");
-        return;
-    }
-    
-    if (miktar1 <= 0) miktar1 = 1;
-    if (miktar2 <= 0) miktar2 = 1;
-
-    var hamAdetMaliyeti = (brut / miktar1) / miktar2;
-
-    var geciciMaliyet = hamAdetMaliyeti;
-    geciciMaliyet = geciciMaliyet * (1 - (isk1 / 100));
-    geciciMaliyet = geciciMaliyet * (1 - (isk2 / 100));
-    geciciMaliyet = geciciMaliyet * (1 - (isk3 / 100));
-    geciciMaliyet = geciciMaliyet * (1 - (isk4 / 100));
-    var netAdetMaliyeti = geciciMaliyet;
-
-    var karTutar = netAdetMaliyeti * (karOran / 100);
-    var karliAdetFiyatiKdvHaric = netAdetMaliyeti + karTutar;
-
-    var kdvTutar = karliAdetFiyatiKdvHaric * (kdvOran / 100);
-    var adetSatisFiyatiKdvDahil = karliAdetFiyatiKdvHaric + kdvTutar;
-
-    var fmt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-
-    document.getElementById('resHamMaliyet').innerText = hamAdetMaliyeti.toLocaleString('tr-TR', fmt) + " TL";
-    document.getElementById('resNetMaliyet').innerText = netAdetMaliyeti.toLocaleString('tr-TR', fmt) + " TL";
-    document.getElementById('resKarTutar').innerText = karTutar.toLocaleString('tr-TR', fmt) + " TL";
-    document.getElementById('resKarliFiyat').innerText = karliAdetFiyatiKdvHaric.toLocaleString('tr-TR', fmt) + " TL";
-    document.getElementById('resKdvTutar').innerText = kdvTutar.toLocaleString('tr-TR', fmt) + " TL";
-    document.getElementById('resAdetSatis').innerText = adetSatisFiyatiKdvDahil.toLocaleString('tr-TR', fmt) + " TL";
-
-    document.getElementById('sonucAlani').style.display = 'block';
-}
-
-var inputs = document.querySelectorAll('input[type="text"]');
-inputs.forEach(function(input) {
-    input.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            input.blur(); 
-            hesaplaSatis();
-        }
-    });
-});
-</script>
-
-</body>
-</html>
