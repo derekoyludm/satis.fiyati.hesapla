@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Hesaplayıcı">
+    
     <title>Sıralı Satış Fiyatı Hesaplayıcı</title>
     <style>
         body {
@@ -144,26 +149,25 @@
         <input type="text" id="miktar2" placeholder="Örn: 1,250" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
     </div>
     
-    <!-- value="0" değerleri silindi, yerine placeholder="0" getirildi -->
     <div class="row-half">
         <div class="input-group">
             <label>İskonto 1 (%)</label>
-            <input type="text" id="isk1" placeholder="0" inputmode="numeric" autocapitalize="off" autocomplete="off" autocorrect="off">
+            <input type="text" id="isk1" placeholder="0" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
         </div>
         <div class="input-group">
             <label>İskonto 2 (%)</label>
-            <input type="text" id="isk2" placeholder="0" inputmode="numeric" autocapitalize="off" autocomplete="off" autocorrect="off">
+            <input type="text" id="isk2" placeholder="0" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
         </div>
     </div>
 
     <div class="row-half">
         <div class="input-group">
             <label>İskonto 3 (%)</label>
-            <input type="text" id="isk3" placeholder="0" inputmode="numeric" autocapitalize="off" autocomplete="off" autocorrect="off">
+            <input type="text" id="isk3" placeholder="0" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
         </div>
         <div class="input-group">
             <label>İskonto 4 (%)</label>
-            <input type="text" id="isk4" placeholder="0" inputmode="numeric" autocapitalize="off" autocomplete="off" autocorrect="off">
+            <input type="text" id="isk4" placeholder="0" inputmode="decimal" autocapitalize="off" autocomplete="off" autocorrect="off">
         </div>
     </div>
 
@@ -213,7 +217,7 @@ function temizleVeCevirTutar(id) {
     var element = document.getElementById(id);
     if (!element) return 0;
     var val = element.value.trim();
-    if (val === "") return 0; // Boş bırakılırsa arka planda 0 kabul edilir
+    if (val === "") return 0;
     var temiz = val.replace(/\./g, '').replace(',', '.');
     var sayi = parseFloat(temiz);
     return isNaN(sayi) ? 0 : sayi;
