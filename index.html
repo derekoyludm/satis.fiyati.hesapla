@@ -7,6 +7,7 @@
 <title>Sıralı Satış Fiyatı Hesaplama</title>
 
 <style>
+
 *{box-sizing:border-box;}
 
 body{
@@ -27,7 +28,10 @@ body{
     box-shadow:0 6px 18px rgba(0,0,0,0.08);
 }
 
-.input-group{margin-bottom:18px;width:100%;}
+.input-group{
+    margin-bottom:18px;
+    width:100%;
+}
 
 label{
     display:block;
@@ -42,11 +46,6 @@ label{
     align-items:center;
     gap:8px;
     width:100%;
-}
-
-.field-container input[type="text"]{
-    width:100%;
-    min-width:0;
 }
 
 input[type="text"]{
@@ -83,6 +82,16 @@ input[type="text"]:focus{
     user-select:none;
 }
 
+.row{
+    display:flex;
+    gap:10px;
+    width:100%;
+}
+
+.row .input-group{
+    flex:1;
+}
+
 button{
     width:100%;
     height:50px;
@@ -95,8 +104,6 @@ button{
     cursor:pointer;
     margin-top:10px;
 }
-
-.result{display:none;margin-top:20px;}
 
 </style>
 </head>
@@ -129,6 +136,8 @@ button{
 </div>
 </div>
 
+<div class="row">
+
 <div class="input-group">
 <label>İskonto 1 (%)</label>
 <div class="field-container">
@@ -144,6 +153,10 @@ button{
 <div class="clear-btn" onclick="temizleKutu('isk2')">×</div>
 </div>
 </div>
+
+</div>
+
+<div class="row">
 
 <div class="input-group">
 <label>İskonto 3 (%)</label>
@@ -161,8 +174,38 @@ button{
 </div>
 </div>
 
+</div>
+
+<div class="row">
+
 <div class="input-group">
-<label>Satış Kutu Miktarı</label>
+<label>Kâr Marjı (%)</label>
+<select id="kar">
+<option value="10">10</option>
+<option value="15">15</option>
+<option value="20">20</option>
+<option value="25" selected>25</option>
+<option value="30">30</option>
+<option value="35">35</option>
+<option value="50">50</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>KDV (%)</label>
+<select id="kdv">
+<option value="1">%1</option>
+<option value="10">%10</option>
+<option value="20" selected>%20</option>
+</select>
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="input-group">
+<label>Kutu Miktarı</label>
 <div class="field-container">
 <input type="text" id="kutuMiktar" class="pink-bg" inputmode="decimal" pattern="[0-9.,]*">
 <div class="clear-btn" onclick="temizleKutu('kutuMiktar')">×</div>
@@ -170,11 +213,13 @@ button{
 </div>
 
 <div class="input-group">
-<label>Satış Kutu İsk. (%)</label>
+<label>Kutu İskonto (%)</label>
 <div class="field-container">
 <input type="text" id="kutuIskonto" class="pink-bg" inputmode="decimal" pattern="[0-9.,]*">
 <div class="clear-btn" onclick="temizleKutu('kutuIskonto')">×</div>
 </div>
+</div>
+
 </div>
 
 <button onclick="hesaplaSatis()">Hesapla</button>
@@ -182,6 +227,7 @@ button{
 </div>
 
 <script>
+
 function temizleKutu(id){
     document.getElementById(id).value = "";
 }
@@ -203,12 +249,28 @@ function hesaplaSatis(){
     let isk3 = guvenliSayiyaCevir("isk3");
     let isk4 = guvenliSayiyaCevir("isk4");
 
+    let kar = parseFloat(document.getElementById("kar").value);
+    let kdv = parseFloat(document.getElementById("kdv").value);
+
+    let km = guvenliSayiyaCevir("kutuMiktar");
+    let ki = guvenliSayiyaCevir("kutuIskonto");
+
+    if(m1<=0) m1=1;
+    if(m2<=0) m2=1;
+    if(km<=0) km=1;
+
     let ham = (brut/m1)/m2;
 
     let net = ham*(1-isk1/100)*(1-isk2/100)*(1-isk3/100)*(1-isk4/100);
 
-    alert("Net: " + net.toFixed(2));
+    let karli = net*(1+kar/100);
+    let satis = karli*(1+kdv/100);
+
+    let kutu = satis*km*(1-ki/100);
+
+    alert("Adet satış: " + satis.toFixed(2));
 }
+
 </script>
 
 </body>
