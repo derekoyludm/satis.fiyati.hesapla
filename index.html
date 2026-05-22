@@ -41,7 +41,6 @@ label{
     color:#3d4f66;
 }
 
-/* 🔥 INPUT + BUTON YAN YANA */
 .field-container{
     display:flex;
     align-items:center;
@@ -49,16 +48,27 @@ label{
     width:100%;
 }
 
-input,select{
+/* INPUT + SELECT GENEL */
+input, select{
     width:100%;
     height:46px;
     border:2px solid #bfc6cd;
     border-radius:8px;
     font-size:16px;
     text-align:center;
+    background:#fff;
 }
 
-/* TEMİZLE BUTONU */
+/* 🔥 AÇIK GRİ (ESKİ TASARIM) */
+select{
+    background:#f2f2f2;
+}
+
+/* RENKLER */
+.yellow-bg{background:#fff7a6 !important;}
+.pink-bg{background:#ffd6e8 !important;}
+
+/* TEMİZLE */
 .clear-btn{
     width:40px;
     height:46px;
@@ -74,10 +84,7 @@ input,select{
     flex-shrink:0;
 }
 
-/* RENKLER */
-.yellow-bg{background:#fff7a6 !important;}
-.pink-bg{background:#ffd6e8 !important;}
-
+/* ROW */
 .row{
     display:flex;
     gap:10px;
@@ -90,6 +97,7 @@ input,select{
     min-width:0;
 }
 
+/* BUTTON */
 button{
     width:100%;
     height:50px;
@@ -133,7 +141,7 @@ button{
 <div class="input-group">
 <label>Brüt Tutar</label>
 <div class="field-container">
-<input type="text" id="brut">
+<input type="tel" id="brut">
 <div class="clear-btn" onclick="temizle('brut')">×</div>
 </div>
 </div>
@@ -141,7 +149,7 @@ button{
 <div class="input-group">
 <label>Miktar</label>
 <div class="field-container">
-<input type="text" id="miktar">
+<input type="tel" id="miktar">
 <div class="clear-btn" onclick="temizle('miktar')">×</div>
 </div>
 </div>
@@ -149,7 +157,7 @@ button{
 <div class="input-group">
 <label>2. Miktar</label>
 <div class="field-container">
-<input type="text" id="miktar2" class="yellow-bg">
+<input type="tel" class="yellow-bg" id="miktar2">
 <div class="clear-btn" onclick="temizle('miktar2')">×</div>
 </div>
 </div>
@@ -159,7 +167,7 @@ button{
 <div class="input-group">
 <label>İsk 1</label>
 <div class="field-container">
-<input type="text" id="isk1">
+<input type="tel" id="isk1">
 <div class="clear-btn" onclick="temizle('isk1')">×</div>
 </div>
 </div>
@@ -167,7 +175,7 @@ button{
 <div class="input-group">
 <label>İsk 2</label>
 <div class="field-container">
-<input type="text" id="isk2">
+<input type="tel" id="isk2">
 <div class="clear-btn" onclick="temizle('isk2')">×</div>
 </div>
 </div>
@@ -179,7 +187,7 @@ button{
 <div class="input-group">
 <label>İsk 3</label>
 <div class="field-container">
-<input type="text" id="isk3">
+<input type="tel" id="isk3">
 <div class="clear-btn" onclick="temizle('isk3')">×</div>
 </div>
 </div>
@@ -187,13 +195,14 @@ button{
 <div class="input-group">
 <label>İsk 4</label>
 <div class="field-container">
-<input type="text" id="isk4">
+<input type="tel" id="isk4">
 <div class="clear-btn" onclick="temizle('isk4')">×</div>
 </div>
 </div>
 
 </div>
 
+<!-- 🔥 KÂR & KDV AÇIK GRİ -->
 <div class="row">
 
 <div class="input-group">
@@ -220,7 +229,7 @@ button{
 <div class="input-group">
 <label>Kutu Miktar</label>
 <div class="field-container">
-<input type="text" id="kutuMiktar" class="pink-bg">
+<input type="tel" class="pink-bg" id="kutuMiktar">
 <div class="clear-btn" onclick="temizle('kutuMiktar')">×</div>
 </div>
 </div>
@@ -228,7 +237,7 @@ button{
 <div class="input-group">
 <label>Kutu İskonto %</label>
 <div class="field-container">
-<input type="text" id="kutuIskonto" class="pink-bg">
+<input type="tel" class="pink-bg" id="kutuIskonto">
 <div class="clear-btn" onclick="temizle('kutuIskonto')">×</div>
 </div>
 </div>
@@ -240,21 +249,15 @@ button{
 <div class="result" id="sonuc">
 
 <p>Birim Fiyat <span class="highlight" id="ham"></span></p>
-
 <p><b>Birim Fiyat İskontolu</b> <span class="highlight" id="net"></span></p>
-
 <p><b>Satış Fiyatı</b> <span class="highlight" id="karli"></span></p>
-
 <p><b>Satış Fiyatı KDV DAHİL</b> <span class="highlight" id="satis"></span></p>
 
 <div class="box">
-
 <p>Kutu Miktar <span class="highlight" id="km"></span></p>
 <p>Kutu İskonto % <span class="highlight" id="ki"></span></p>
 <p>Kutu İskonto Tutar <span class="highlight" id="kit"></span></p>
-
 <p><b>Kutu Satış Fiyatı</b> <span class="highlight" id="ksf"></span></p>
-
 </div>
 
 </div>
@@ -294,7 +297,6 @@ if(m1<=0)m1=1;
 if(m2<=0)m2=1;
 
 let ham=(brut/m1)/m2;
-
 let net=ham*(1-isk1/100)*(1-isk2/100)*(1-isk3/100)*(1-isk4/100);
 
 let karli=net*(1+kar/100);
