@@ -16,6 +16,7 @@
     -webkit-tap-highlight-color:transparent;
 }
 
+/* 🟢 Hem bilgisayarda hem telefonda dikey ve yatay tam ortalama sağlayan esnek yapı */
 body{
     margin:0;
     padding:20px;
@@ -27,13 +28,15 @@ body{
     min-height: 100vh;
 }
 
+/* 🟢 Kutunun genişlik dengesini hem PC hem mobil için koruyan alan */
 .container{
     width:100%;
-    max-width:470px;
+    max-width:440px; /* Bilgisayardaki ideal genişlik */
     background:#fff;
     border-radius:18px;
     padding:26px;
     box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    margin: auto; /* Dış boşlukları otomatik dağıtarak ekstra ortalama sağlar */
 }
 
 .input-group{
@@ -73,7 +76,7 @@ select:focus {
     font-size: 16px !important;
 }
 
-/* 📱 SELECT KUTULARI İÇİN MOBİL UYUMLULUK VE OK İŞARETİ */
+/* SELECT KUTULARI İÇİN MOBİL UYUMLULUK VE OK İŞARETİ */
 select {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -236,7 +239,6 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
 <div class="input-group">
 <label>Birim Fiyat</label>
 <div class="field-container">
-<!-- 🟢 iPhone'da hem virgül hem Enter getiren inputmode yapısı eklendi -->
 <input id="brut" type="text" inputmode="decimal">
 <div class="clear-btn" ontouchstart="temizle(event,'brut')" onclick="temizle(event,'brut')">×</div>
 </div>
