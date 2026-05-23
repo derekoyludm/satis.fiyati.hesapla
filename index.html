@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Satış Fiyatı Hesaplama</title>
 
+<!-- FAVICON (EKLENDİ) -->
 <link rel="icon" type="image/png" sizes="512x512" href="tag-512.png">
 <link rel="apple-touch-icon" href="tag-512.png">
 
@@ -33,7 +34,9 @@ body{
     box-shadow:0 6px 18px rgba(0,0,0,0.08);
 }
 
-.input-group{ margin-bottom:18px; }
+.input-group{
+    margin-bottom:18px;
+}
 
 label{
     display:block;
@@ -59,14 +62,8 @@ button{
     font-size:15px;
     text-align:center;
     background:#fff;
+    font-weight:400;
     transition:.15s;
-}
-
-select{
-    -webkit-appearance:none;
-    -moz-appearance:none;
-    appearance:none;
-    cursor:pointer;
 }
 
 input:focus,
@@ -78,19 +75,51 @@ select:focus{
 
 .main-btn{
     flex:1;
+    background:#fff;
+    color:#2c3e50;
     font-weight:600;
     cursor:pointer;
+    border:1.5px solid #c9d2dc;
+    transition:.15s;
+}
+
+.main-btn:hover{
+    background:#f6f8fa;
+}
+
+.main-btn:focus,
+.main-btn:active{
+    outline:none;
+    border-color:#8fd4ae;
+    box-shadow:0 0 0 4px rgba(143,212,174,0.35);
+}
+
+button.clicked-blue{
+    border-color:#8fd4ae !important;
+    box-shadow:0 0 0 4px rgba(143,212,174,0.45) !important;
 }
 
 .reset-btn{
     width:46px;
     min-width:46px;
+    background:#fff;
+    color:#2c3e50;
+    border:1.5px solid #c9d2dc;
+    border-radius:8px;
     cursor:pointer;
+    font-size:16px;
+    transition:.15s;
 }
 
+.reset-btn:hover{
+    background:#f6f8fa;
+}
+
+/* 🔴 RESET AKTİF RENK */
 .reset-btn:focus,
 .reset-btn:active,
 .reset-btn.active-reset{
+    outline:none;
     border-color:#e74c3c;
     box-shadow:0 0 0 4px rgba(231,76,60,0.35);
 }
@@ -98,30 +127,79 @@ select:focus{
 .clear-btn{
     width:40px;
     height:46px;
+    min-width:40px;
     background:#3498db;
-    color:#fff;
+    border-radius:8px;
     display:flex;
     align-items:center;
     justify-content:center;
+    color:#fff;
+    font-weight:600;
     cursor:pointer;
 }
 
-.row{ display:flex; gap:10px; }
-.row .input-group{ flex:1; }
+.clear-btn:hover{
+    background:#2587ca;
+}
 
-.button-row{ display:flex; gap:10px; margin-top:10px; }
+.yellow-bg{background:#fff7a6 !important;}
+.pink-bg{background:#ffd6e8 !important;}
+.gray-bg{background:#f2f4f7 !important;}
 
-.result{ display:none; margin-top:20px; background:#f7fbf9; padding:15px; border-radius:10px; }
+.row{
+    display:flex;
+    gap:10px;
+}
 
-.highlight{ float:right; font-weight:600; }
+.row .input-group{
+    flex:1;
+}
+
+.button-row{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.result{
+    display:none;
+    margin-top:20px;
+    background:#f7fbf9;
+    padding:15px;
+    border-radius:10px;
+}
+
+.result p{
+    margin:8px 0;
+    font-size:14px;
+    color:#3d4f66;
+}
+
+.highlight{
+    float:right;
+    font-weight:600;
+    color:#2c3e50;
+}
 
 .box{
     margin-top:12px;
     padding:10px;
     background:#eaf7ef;
-    border:2px solid #b7eac8;
-    border-left:5px solid #2ecc71;
+    border-left:4px solid #2ecc71;
     border-radius:8px;
+}
+
+.box p{
+    margin:6px 0;
+    font-size:13px;
+}
+
+.creator{
+    margin-top:22px;
+    text-align:center;
+    font-size:12px;
+    color:#9aa6b2;
+    letter-spacing:.4px;
 }
 
 </style>
@@ -150,7 +228,7 @@ select:focus{
 <div class="input-group">
 <label>2. Miktar</label>
 <div class="field-container">
-<input id="miktar2" type="tel">
+<input id="miktar2" type="tel" class="yellow-bg">
 <div class="clear-btn" onclick="temizle(event,'miktar2')">×</div>
 </div>
 </div>
@@ -199,7 +277,7 @@ select:focus{
 
 <div class="input-group">
 <label>Kâr %</label>
-<select id="kar">
+<select id="kar" class="gray-bg">
 <option value="25">25</option>
 <option value="30">30</option>
 <option value="40">40</option>
@@ -209,7 +287,7 @@ select:focus{
 
 <div class="input-group">
 <label>KDV %</label>
-<select id="kdv">
+<select id="kdv" class="gray-bg">
 <option value="20">20</option>
 <option value="10">10</option>
 <option value="1">1</option>
@@ -223,14 +301,14 @@ select:focus{
 <div class="input-group">
 <label>Kutu Miktar</label>
 <div class="field-container">
-<input id="kutuMiktar" type="tel">
+<input id="kutuMiktar" type="tel" class="pink-bg">
 <div class="clear-btn" onclick="temizle(event,'kutuMiktar')">×</div>
 </div>
 </div>
 
 <div class="input-group">
 <label>Kutu İskonto %</label>
-<select id="kutuIskonto">
+<select id="kutuIskonto" class="pink-bg">
 <option value="5">%5</option>
 <option value="10">%10</option>
 <option value="15">%15</option>
@@ -241,22 +319,47 @@ select:focus{
 
 <div class="button-row">
 
-<button id="hesaplaBtn" onclick="hesapla()">Hesapla</button>
+<button id="hesaplaBtn" class="main-btn" onclick="hesapla()">
+Hesapla
+</button>
 
-<button class="reset-btn" onclick="sifirla(event)">↺</button>
+<button class="reset-btn" onclick="sifirla(event)">
+↺
+</button>
 
 </div>
 
 <div class="result" id="sonuc">
+
 <p>Birim Fiyat <span id="ham" class="highlight"></span></p>
-<p><b>Net</b> <span id="net" class="highlight"></span></p>
-<p><b>Kârlı</b> <span id="karli" class="highlight"></span></p>
-<p><b>KDV Dahil</b> <span id="satis" class="highlight"></span></p>
+<p><b>Birim Fiyat İskontolu</b> <span id="net" class="highlight"></span></p>
+<p><b>Satış Fiyatı Kârlı</b> <span id="karli" class="highlight"></span></p>
+<p><b>Satış Fiyatı KDV DAHİL</b> <span id="satis" class="highlight"></span></p>
+
+<div class="box">
+<p>Kutu Miktar <span id="km" class="highlight"></span></p>
+<p><b>Kutu Tutarı İskontosuz</b> <span id="ksk" class="highlight"></span></p>
+<p>Kutu İskonto % <span id="ki" class="highlight"></span></p>
+<p>Kutu İskonto Tutarı <span id="kit" class="highlight"></span></p>
+<p><b>Kutu Satış Fiyatı</b> <span id="ksf" class="highlight"></span></p>
+</div>
+</div>
+
+<div class="creator">
+    Created by Fatih Mersin
 </div>
 
 </div>
 
 <script>
+
+/* JS aynı bırakıldı */
+function temizle(e,id){
+    e.preventDefault();
+    document.getElementById(id).value="";
+    hesapGecersizYap();
+    setTimeout(()=>{document.getElementById(id).focus();},10);
+}
 
 function g(id){
     let v=document.getElementById(id).value.trim();
@@ -265,10 +368,12 @@ function g(id){
 }
 
 function hesapla(){
+    let btn=document.getElementById("hesaplaBtn");
+    btn.classList.add("clicked-blue");
 
     let brut=g("brut");
-    let m1=g("miktar")||1;
-    let m2=g("miktar2")||1;
+    let m1=g("miktar") || 1;
+    let m2=g("miktar2") || 1;
 
     let isk1=g("isk1");
     let isk2=g("isk2");
@@ -278,53 +383,92 @@ function hesapla(){
     let kar=parseFloat(document.getElementById("kar").value);
     let kdv=parseFloat(document.getElementById("kdv").value);
 
+    let km=g("kutuMiktar") || 1;
+    let ki=parseFloat(document.getElementById("kutuIskonto").value);
+
     let ham=(brut/m1)/m2;
 
-    let net=ham*(1-isk1/100)*(1-isk2/100)*(1-isk3/100)*(1-isk4/100);
+    let net=
+        ham*
+        (1-isk1/100)*
+        (1-isk2/100)*
+        (1-isk3/100)*
+        (1-isk4/100);
 
     let karli=net*(1+kar/100);
     let satis=karli*(1+kdv/100);
+
+    let iskontosuzKutu=satis*km;
 
     document.getElementById("ham").innerText=ham.toFixed(2);
     document.getElementById("net").innerText=net.toFixed(2);
     document.getElementById("karli").innerText=karli.toFixed(2);
     document.getElementById("satis").innerText=satis.toFixed(2);
 
+    document.getElementById("km").innerText=km;
+    document.getElementById("ki").innerText=ki+"%";
+    document.getElementById("kit").innerText=(iskontosuzKutu*(ki/100)).toFixed(2);
+    document.getElementById("ksk").innerText=iskontosuzKutu.toFixed(2);
+    document.getElementById("ksf").innerText=(iskontosuzKutu*(1-ki/100)).toFixed(2);
+
     document.getElementById("sonuc").style.display="block";
 }
 
-function sifirla(e){
-    e.preventDefault();
-    document.querySelectorAll("input").forEach(i=>i.value="");
-    document.querySelectorAll("select").forEach(s=>s.selectedIndex=0);
+function hesapGecersizYap(){
     document.getElementById("sonuc").style.display="none";
+    document.getElementById("hesaplaBtn").classList.remove("clicked-blue");
 }
 
-function temizle(e,id){
-    e.preventDefault();
-    document.getElementById(id).value="";
-    setTimeout(()=>document.getElementById(id).focus(),10);
-}
+document.querySelectorAll("input, select")
+.forEach(el=>{
 
-/* 🔥 ENTER NAVİGASYON GERİ GELDİ */
-const alanlar=[...document.querySelectorAll("input,select")];
+    el.addEventListener("input", ()=>{
+        hesapGecersizYap();
+        document.querySelector(".reset-btn")
+            .classList.remove("active-reset");
+    });
+
+    el.addEventListener("change", ()=>{
+        hesapGecersizYap();
+        document.querySelector(".reset-btn")
+            .classList.remove("active-reset");
+    });
+
+});
+
+const alanlar = Array.from(document.querySelectorAll("input,select"));
 
 alanlar.forEach((el,i)=>{
     el.addEventListener("keydown",(e)=>{
         if(e.key==="Enter"){
             e.preventDefault();
+            document.activeElement.blur();
 
             let next=alanlar[i+1];
-
             if(next){
-                next.focus();
-                if(next.tagName==="INPUT") next.select();
+                setTimeout(()=>{
+                    next.focus();
+                    if(next.tagName==="INPUT") next.select();
+                },0);
             }else{
                 hesapla();
             }
         }
     });
 });
+
+function sifirla(e){
+    e.preventDefault();
+
+    document.querySelectorAll("input").forEach(i=>i.value="");
+    document.querySelectorAll("select").forEach(s=>s.selectedIndex=0);
+
+    document.getElementById("sonuc").style.display="none";
+    document.getElementById("hesaplaBtn").classList.remove("clicked-blue");
+
+    let resetBtn = e.currentTarget;
+    resetBtn.classList.add("active-reset");
+}
 
 </script>
 
