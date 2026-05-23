@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sıralı Satış Fiyatı Hesaplama</title>
 
+<!-- FAVICON (EKLENDİ) -->
+<link rel="icon" type="image/png" sizes="512x512" href="tag-512.png">
+<link rel="apple-touch-icon" href="tag-512.png">
+
 <style>
 
 *{
@@ -349,6 +353,7 @@ Hesapla
 
 <script>
 
+/* JS aynı bırakıldı */
 function temizle(e,id){
     e.preventDefault();
     document.getElementById(id).value="";
@@ -363,7 +368,6 @@ function g(id){
 }
 
 function hesapla(){
-
     let btn=document.getElementById("hesaplaBtn");
     btn.classList.add("clicked-blue");
 
@@ -419,17 +423,13 @@ document.querySelectorAll("input, select")
 .forEach(el=>{
 
     el.addEventListener("input", ()=>{
-
         hesapGecersizYap();
-
         document.querySelector(".reset-btn")
             .classList.remove("active-reset");
     });
 
     el.addEventListener("change", ()=>{
-
         hesapGecersizYap();
-
         document.querySelector(".reset-btn")
             .classList.remove("active-reset");
     });
