@@ -66,14 +66,12 @@ button{
     transition:.15s;
 }
 
-/* 📱 MOBİLDE SELECT KUTULARININ YEŞİL ÇERÇEVESİNİ AKTİF ETMEK İÇİN GÜNCELLENDİ */
 select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    text-align-last: center; /* Yazıyı ortala */
-    padding-right: 24px; /* Ok işareti için pay */
-    /* Sağ tarafa modern bir aşağı ok simgesi yerleştirme */
+    text-align-last: center;
+    padding-right: 24px;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 4 5'><path fill='%236b7a90' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
     background-repeat: no-repeat;
     background-position: right 12px center;
@@ -129,7 +127,6 @@ button.clicked-blue{
     background:#f6f8fa;
 }
 
-/* 🔴 RESET AKTİF RENK */
 .reset-btn:focus,
 .reset-btn:active,
 .reset-btn.active-reset{
@@ -160,7 +157,6 @@ button.clicked-blue{
 .pink-bg{background:#ffd6e8 !important;}
 .gray-bg{background:#f2f4f7 !important;}
 
-/* Odaklanıldığında arka plan rengini koruması için ek kontrol */
 select.gray-bg:focus { background-color: #f2f4f7 !important; }
 select.pink-bg:focus { background-color: #ffd6e8 !important; }
 
@@ -371,11 +367,22 @@ Hesapla
 
 <script>
 
+/* GÜNCELLENDİ: Mobilde klavyeyi kaybettirmeden inputu yazmaya hazır yapar */
 function temizle(e,id){
     e.preventDefault();
-    document.getElementById(id).value="";
+    e.stopPropagation();
+    
+    let el = document.getElementById(id);
+    el.value = "";
     hesapGecersizYap();
-    setTimeout(()=>{document.getElementById(id).focus();},10);
+    
+    // 50ms bekleme süresi mobilde dokunma çakışmalarını önler ve odağı korur
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0); // İmleci en başa alır
+        }
+    }, 50);
 }
 
 function g(id){
@@ -450,6 +457,13 @@ document.querySelectorAll("input, select")
         document.querySelector(".reset-btn")
             .classList.remove("active-reset");
     });
+    
+    // Kutulara tıklandığında içindeki eski sayıyı otomatik seçer (büyük kolaylık sağlar)
+    if(el.tagName === "INPUT") {
+        el.addEventListener("focus", () => {
+            setTimeout(() => { el.select(); }, 50);
+        });
+    }
 
 });
 
