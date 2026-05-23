@@ -66,7 +66,7 @@ button{
     transition:.15s;
 }
 
-/* 📱 MOBİLDE SELECT KUTULARININ YEŞİL ÇERÇEVESİNİ AKTİF ETMEK İÇİN GÜNCELLENDİ */
+/* 📱 SELECT KUTULARI İÇİN MOBİL UYUMLULUK VE OK İŞARETİ */
 select {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -79,11 +79,13 @@ select {
     background-size: 8px;
 }
 
+/* 🟢 TELEFONDA ETRAFININ AÇIK YEŞİL OLMASINI SAĞLAYAN GÜNCELLEME */
 input:focus,
 select:focus {
-    outline:none;
-    border-color:#8fd4ae !important;
-    box-shadow:0 0 0 4px rgba(143,212,174,0.35) !important;
+    outline: none !important;
+    -webkit-fullscreen-control-style: none;
+    border-color: #8fd4ae !important;
+    box-shadow: 0 0 0 4px rgba(143,212,174,0.45) !important;
 }
 
 .main-btn{
@@ -369,7 +371,6 @@ Hesapla
 
 <script>
 
-/* 📱 GÜNCELLENDİ: Mobilde klavyeyi ve imleci kaybettirmeden anında odağı korur */
 function temizle(e,id){
     e.preventDefault();
     e.stopPropagation();
@@ -378,11 +379,10 @@ function temizle(e,id){
     el.value = "";
     hesapGecersizYap();
     
-    // 40ms gecikme mobil işletim sisteminin klavye kapatma refleksini kırar
     setTimeout(() => {
         el.focus();
         if(typeof el.setSelectionRange === "function") {
-            el.setSelectionRange(0, 0); // İmleci kutunun içine yerleştirir
+            el.setSelectionRange(0, 0); 
         }
     }, 40);
 }
@@ -460,7 +460,6 @@ document.querySelectorAll("input, select")
             .classList.remove("active-reset");
     });
     
-    // Kutunun kendisine elle tıklandığında içindeki eski sayıyı otomatik seçer
     if(el.tagName === "INPUT") {
         el.addEventListener("focus", () => {
             setTimeout(() => { el.select(); }, 50);
