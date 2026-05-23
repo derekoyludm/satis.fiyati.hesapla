@@ -2,7 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 🟢 Mobil tarayıcıların otomatik yakınlaştırma yapmasını engelleyen kesin viewport ayarı -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, user-scalable=no">
 <title>Satış Fiyatı Hesaplama</title>
 
 <!-- FAVICON -->
@@ -23,8 +24,8 @@ body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
     display:flex;
     justify-content:center;
-    align-items:center; /* 🟢 Dikeyde tam ortalama sağlar */
-    min-height: 100vh;  /* 🟢 Ekran yüksekliğine göre esnemesini sağlar */
+    align-items:center;
+    min-height: 100vh;
 }
 
 .container{
@@ -61,11 +62,17 @@ button{
     height:46px;
     border:1.5px solid #c9d2dc;
     border-radius:8px;
-    font-size:15px;
+    font-size:16px; /* 🟢 Yakınlaşmayı önleyen kritik sınır (Minimum 16px) */
     text-align:center;
     background:#fff;
     font-weight:400;
     transition:.15s;
+}
+
+/* 🟢 İmleç gelip odaklanıldığında (focus) tarayıcının yazı boyutunu küçültüp yakınlaşma yapmasını engelleme */
+input:focus, 
+select:focus {
+    font-size: 16px !important;
 }
 
 /* 📱 SELECT KUTULARI İÇİN MOBİL UYUMLULUK VE OK İŞARETİ */
@@ -81,7 +88,7 @@ select {
     background-size: 8px;
 }
 
-/* 🟢 TELEFONDA ETRAFININ AÇIK YEŞİL OLMASINI SAĞLAYAN GÜNCELLEME */
+/* TELEFONDA ETRAFININ AÇIK YEŞİL OLMASINI SAĞLAYAN GÜNCELLEME */
 input:focus,
 select:focus {
     outline: none !important;
@@ -375,18 +382,15 @@ Hesapla
 <script>
 
 function temizle(e,id){
-    // Hem dokunma hem tıklama tetiklendiğinde çift çalışmayı engeller
     e.preventDefault();
     e.stopPropagation();
     
     let el = document.getElementById(id);
-    el.value = ""; // Kutuyu temizle
-    hesapGecersizYap(); // Sonuç panelini gizle
+    el.value = ""; 
+    hesapGecersizYap(); 
     
-    // Mobil klavyenin açılması ve imlecin (focus) anında gelmesi için en kesin yöntem
     el.focus();
     
-    // Bazı tarayıcılarda focus'un kaybolmaması için zamanlayıcı desteği
     setTimeout(() => {
         el.focus();
         if(typeof el.setSelectionRange === "function") {
