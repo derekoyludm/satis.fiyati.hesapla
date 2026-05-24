@@ -305,7 +305,11 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
 <div class="input-group">
 <label>Kâr %</label>
 <select id="kar" class="gray-bg">
-<option value="25">25</option>
+<option value="5">5</option>
+<option value="10">10</option>
+<option value="15">15</option>
+<option value="20">20</option>
+<option value="25" selected>25</option> <!-- Sabitlendi -->
 <option value="30">30</option>
 <option value="40">40</option>
 <option value="50">50</option>
@@ -317,7 +321,7 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
 <select id="kdv" class="gray-bg">
 <option value="20">20</option>
 <option value="10">10</option>
-<option value="1">1</option>
+<option value="1" selected>1</option> <!-- Sabitlendi -->
 </select>
 </div>
 
@@ -504,7 +508,11 @@ function sifirla(e){
     e.preventDefault();
 
     document.querySelectorAll("input").forEach(i=>i.value="");
-    document.querySelectorAll("select").forEach(s=>s.selectedIndex=0);
+    
+    // Sıfırlandığında senin belirlediğin değerlere dönmesi sağlandı
+    document.getElementById("kar").value = "25";
+    document.getElementById("kdv").value = "1";
+    document.getElementById("kutuIskonto").selectedIndex = 0;
 
     document.getElementById("sonuc").style.display="none";
     document.getElementById("hesaplaBtn").classList.remove("clicked-blue");
