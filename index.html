@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, user-scalable=no">
 <title>Satış Fiyatı Hesaplama</title>
 
-<!-- FAVICON -->
 <link rel="icon" type="image/png" sizes="512x512" href="tag-512.png">
 <link rel="apple-touch-icon" href="tag-512.png">
 
@@ -208,6 +207,13 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
     color:#2c3e50;
 }
 
+.label-text {
+    font-weight: normal;
+    color: #7f8c8d;
+    font-size: 12px;
+    margin-left: 4px;
+}
+
 .box{
     margin-top:12px;
     padding:10px;
@@ -309,7 +315,7 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
 <option value="10">10</option>
 <option value="15">15</option>
 <option value="20">20</option>
-<option value="25" selected>25</option> <!-- Sabitlendi -->
+<option value="25" selected>25</option>
 <option value="30">30</option>
 <option value="40">40</option>
 <option value="50">50</option>
@@ -321,7 +327,7 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
 <select id="kdv" class="gray-bg">
 <option value="20">20</option>
 <option value="10">10</option>
-<option value="1" selected>1</option> <!-- Sabitlendi -->
+<option value="1" selected>1</option>
 </select>
 </div>
 
@@ -363,9 +369,10 @@ Hesapla
 <div class="result" id="sonuc">
 
 <p>Birim Fiyat <span id="ham" class="highlight"></span></p>
-<p><b>Birim Fiyat İskontolu</b> <span id="net" class="highlight"></span></p>
-<p><b>Satış Fiyatı Kârlı</b> <span id="karli" class="highlight"></span></p>
-<p><b>Satış Fiyatı KDV DAHİL</b> <span id="satis" class="highlight"></span></p>
+<p><b>Birim Fiyat İskontolu</b> <span id="txtIsk" class="label-text"></span> <span id="net" class="highlight"></span></p>
+<p><b>Satış Fiyatı Kârlı</b> <span id="txtKar" class="label-text"></span> <span id="karli" class="highlight"></span></p>
+<p><b>Satış Fiyatı KDV DAHİL</b> <span id="txtSatisKdv" class="label-text"></span> <span id="satis" class="highlight"></span></p>
+<p style="color:#c0392b;"><b>Alış Fiyatı KDV DAHİL</b> <span id="txtAlisKdv" class="label-text" style="color:#c0392b;"></span> <span id="alisKdvDahil" class="highlight" style="color:#c0392b;"></span></p>
 
 <div class="box">
 <p>Kutu Miktar <span id="km" class="highlight"></span></p>
@@ -436,15 +443,27 @@ function hesapla(){
         (1-isk3/100)*
         (1-isk4/100);
 
+    // Toplam bileşik iskonto oranını yüzde olarak hesaplar
+    let toplamIskontoYuzdesi = ham > 0 ? ((ham - net) / ham) * 100 : 0;
+
     let karli=net*(1+kar/100);
     let satis=karli*(1+kdv/100);
+    let alisKdvDahil = net * (1 + kdv / 100);
 
     let iskontosuzKutu=satis*km;
 
+    // Dinamik başlık yazılarını güncelleme (Parantez içi oranlar)
+    document.getElementById("txtIsk").innerText = toplamIskontoYuzdesi > 0 ? "(%" + toplamIskontoYuzdesi.toFixed(1) + ")" : "";
+    document.getElementById("txtKar").innerText = "(%" + kar + ")";
+    document.getElementById("txtSatisKdv").innerText = "(%" + kdv + ")";
+    document.getElementById("txtAlisKdv").innerText = "(%" + kdv + ")";
+
+    // Fiyatları yazdırma
     document.getElementById("ham").innerText=ham.toFixed(2);
     document.getElementById("net").innerText=net.toFixed(2);
     document.getElementById("karli").innerText=karli.toFixed(2);
     document.getElementById("satis").innerText=satis.toFixed(2);
+    document.getElementById("alisKdvDahil").innerText=alisKdvDahil.toFixed(2);
 
     document.getElementById("km").innerText=km;
     document.getElementById("ki").innerText=ki+"%";
@@ -509,7 +528,6 @@ function sifirla(e){
 
     document.querySelectorAll("input").forEach(i=>i.value="");
     
-    // Sıfırlandığında senin belirlediğin değerlere dönmesi sağlandı
     document.getElementById("kar").value = "25";
     document.getElementById("kdv").value = "1";
     document.getElementById("kutuIskonto").selectedIndex = 0;
