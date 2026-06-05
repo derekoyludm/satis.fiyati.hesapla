@@ -458,17 +458,23 @@ function hesapla(){
     document.getElementById("txtSatisKdv").innerText = "(%" + kdv + ")";
     document.getElementById("txtAlisKdv").innerText = "(%" + kdv + ")";
 
-    document.getElementById("ham").innerText=ham.toFixed(2);
-    document.getElementById("net").innerText=net.toFixed(2);
-    document.getElementById("karli").innerText=karli.toFixed(2);
-    document.getElementById("satis").innerText=satis.toFixed(2);
-    document.getElementById("alisKdvDahil").innerText=alisKdvDahil.toFixed(2);
+    // 🟢 Sayıları Türkçe formatına (virgüllü ve binlik noktalı) çeviren fonksiyon
+    function formatTR(deger) {
+        return deger.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // 🟢 Sonuçların Türkçe formatta yazdırılması
+    document.getElementById("ham").innerText=formatTR(ham);
+    document.getElementById("net").innerText=formatTR(net);
+    document.getElementById("karli").innerText=formatTR(karli);
+    document.getElementById("satis").innerText=formatTR(satis);
+    document.getElementById("alisKdvDahil").innerText=formatTR(alisKdvDahil);
 
     document.getElementById("km").innerText=km;
     document.getElementById("ki").innerText=ki+"%";
-    document.getElementById("kit").innerText=(iskontosuzKutu*(ki/100)).toFixed(2);
-    document.getElementById("ksk").innerText=iskontosuzKutu.toFixed(2);
-    document.getElementById("ksf").innerText=(iskontosuzKutu*(1-ki/100)).toFixed(2);
+    document.getElementById("kit").innerText=formatTR(iskontosuzKutu*(ki/100));
+    document.getElementById("ksk").innerText=formatTR(iskontosuzKutu);
+    document.getElementById("ksf").innerText=formatTR(iskontosuzKutu*(1-ki/100));
 
     document.getElementById("sonuc").style.display="block";
 }
