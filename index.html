@@ -250,6 +250,8 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
 </div>
 </div>
 
+<div class="row">
+
 <div class="input-group">
 <label>Miktar</label>
 <div class="field-container">
@@ -264,6 +266,8 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
 <input id="miktar2" type="text" inputmode="decimal" class="yellow-bg">
 <div class="clear-btn" ontouchstart="temizle(event,'miktar2')" onclick="temizle(event,'miktar2')">×</div>
 </div>
+</div>
+
 </div>
 
 <div class="row">
@@ -327,9 +331,9 @@ select.pink-bg:focus { background-color: #ffd6e8 !important; }
 <div class="input-group">
 <label>KDV %</label>
 <select id="kdv" class="gray-bg">
-<option value="20">20</option>
-<option value="10">10</option>
 <option value="1" selected>1</option>
+<option value="10">10</option>
+<option value="20">20</option>
 </select>
 </div>
 
@@ -392,6 +396,11 @@ Hesapla
 
 <script>
 
+// Miktar kutusuna yazılanı anlık olarak Kutu Miktar kutusuna kopyalar
+document.getElementById("miktar").addEventListener("input", function() {
+    document.getElementById("kutuMiktar").value = this.value;
+});
+
 function temizle(e,id){
     e.preventDefault();
     e.stopPropagation();
@@ -399,6 +408,11 @@ function temizle(e,id){
     let el = document.getElementById(id);
     el.value = ""; 
     hesapGecersizYap(); 
+    
+    // Eğer 'miktar' temizlendiyse 'kutuMiktar'ı da temizle
+    if (id === "miktar") {
+        document.getElementById("kutuMiktar").value = "";
+    }
     
     el.focus();
     
@@ -414,6 +428,11 @@ function g(id){
     let v=document.getElementById(id).value.trim();
     if(!v) return 0;
     return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+// 🟢 Alanın boş olup olmadığını kontrol eden ek fonksiyon
+function alanBosMu(id){
+    return document.getElementById(id).value.trim() === "";
 }
 
 function hesapla(){
@@ -458,19 +477,25 @@ function hesapla(){
     document.getElementById("txtAlisKdv").innerText = "(%" + kdv + ")";
     document.getElementById("txtKutuIsk").innerText = "(%" + ki + ")";
 
-    // 🟢 Sayıları Türkçe formatına (virgüllü ve binlik noktalı) çeviren fonksiyon
+    // Sayıları Türkçe formatına çeviren fonksiyon
     function formatTR(deger) {
         return deger.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // 🟢 Sonuçların Türkçe formatta yazdırılması
+    // Sonuçların Türkçe formatta yazdırılması
     document.getElementById("ham").innerText=formatTR(ham);
     document.getElementById("net").innerText=formatTR(net);
     document.getElementById("karli").innerText=formatTR(karli);
     document.getElementById("satis").innerText=formatTR(satis);
     document.getElementById("alisKdvDahil").innerText=formatTR(alisKdvDahil);
 
-    document.getElementById("km").innerText=km;
+    // 🟢 Eğer Miktar ve Kutu Miktar alanları boşsa sonuç panelinde 1 yazmasın, boş kalsın
+    if(alanBosMu("miktar") && alanBosMu("kutuMiktar")) {
+        document.getElementById("km").innerText="";
+    } else {
+        document.getElementById("km").innerText=g("kutuMiktar"); 
+    }
+    
     document.getElementById("kit").innerText=formatTR(iskontosuzKutu*(ki/100));
     document.getElementById("ksk").innerText=formatTR(iskontosuzKutu);
     document.getElementById("ksf").innerText=formatTR(iskontosuzKutu*(1-ki/100));
