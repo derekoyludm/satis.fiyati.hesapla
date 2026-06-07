@@ -512,7 +512,7 @@ Hesapla
 
 <script>
 
-// 🟢 Sayfa yüklenir yüklenmez ilk odağı Birim Fiyat alanına verir
+// Sayfa yüklenir yüklenmez ilk odağı Birim Fiyat alanına verir
 window.addEventListener("DOMContentLoaded", () => {
     const ilkAlan = document.getElementById("brut");
     if(ilkAlan) {
@@ -682,8 +682,9 @@ window.addEventListener("keydown", (e) => {
 alanlar.forEach((el,i)=>{
     el.addEventListener("keydown",(e)=>{
         
-        // Klavyedeki + ve - tuşları ile SELECT elemanlarını değiştirme kuralı
+        // 🟢 Yeni: Kar % ve Kutu İskonto % için özel sayısal tuş basım kuralları
         if(el.tagName === "SELECT") {
+            // Klavyedeki + ve - tuşları kuralı
             if(e.key === "+" || e.key === "Add") {
                 e.preventDefault();
                 degistir(el.id, 1);
@@ -693,6 +694,38 @@ alanlar.forEach((el,i)=>{
                 e.preventDefault();
                 degistir(el.id, -1);
                 return;
+            }
+
+            // Kar % Kutusunda '2' tuşuna basınca 20 ve 25 arası geçiş
+            if(el.id === "kar" && (e.key === "2")) {
+                e.preventDefault();
+                if(el.value === "20") {
+                    el.value = "25";
+                } else {
+                    el.value = "20";
+                }
+                el.dispatchEvent(new Event('change'));
+                return;
+            }
+
+            // Kutu İskonto % Kutusunda tuş geçiş kuralları
+            if(el.id === "kutuIskonto") {
+                if(e.key === "1") { // '1' tuşuna ardı ardına basınca %10 ve %15 arası geçiş
+                    e.preventDefault();
+                    if(el.value === "10") {
+                        el.value = "15";
+                    } else {
+                        el.value = "10";
+                    }
+                    el.dispatchEvent(new Event('change'));
+                    return;
+                }
+                if(e.key === "5") { // '5' tuşuna basınca direkt %5 seçilmesi
+                    e.preventDefault();
+                    el.value = "5";
+                    el.dispatchEvent(new Event('change'));
+                    return;
+                }
             }
         }
 
