@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, user-scalable=no">
+<title>Hesaplama Araçları (Super App)</title>
+
+<link class="icon" type="image/png" sizes="512x512" href="tag-512.png">
+<link rel="apple-touch-icon" href="tag-512.png">
+
+<style>
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    margin:0;
+    padding: 20px; 
+    background:#eef2f5;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+    display:flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    align-items: center; 
+    min-height: 100vh;
+}
+
+/* 🟢 Süper App Ana Konteyner */
+.app-container {
+    width:100%;
+    max-width:440px; 
+    margin: 0 auto;
+}
+
+/* 🟢 Üst Sekme (Tab) Tasarımı (Mouse & Dokunmatik Uyumlu Yatay Kaydırılabilir Yapı) */
+.tab-header {
+    display: flex;
+    background: #fff;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 10px;
+    gap: 4px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Alt Sekme Barı için Ekstra Stil */
+.sub-tab-header {
+    margin-bottom: 15px;
+}
+
+/* Modern İnce Scrollbar */
+.tab-header::-webkit-scrollbar {
+    height: 4px;
+}
+.tab-header::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.tab-header::-webkit-scrollbar-thumb {
+    background: #c9d2dc;
+    border-radius: 10px;
+}
+.tab-header::-webkit-scrollbar-thumb:hover {
+    background: #3498db;
+}
+
+.tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    height: 40px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7a90;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all .2s;
+    padding: 0 14px;
+    display: inline-block;
+}
+
+.tab-btn.active {
+    background: #3498db;
+    color: #fff;
+}
+
+/* 🟢 İçerik Alanları Kontrolü */
+.tab-content {
+    display: none;
+    background:#fff;
+    border-radius:18px;
+    padding:26px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    width: 100%;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* GENEL STİLLER */
+.input-group{
+    margin-bottom:18px;
+}
+
+.input-group-dinamik {
+    margin-bottom:14px;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:500;
+    font-size:13px;
+    color:#6b7a90;
+}
+
+.field-container{
+    display:flex;
+    gap:4px; 
+    align-items:center;
+}
+
+.field-container-isk {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+}
+
+.stepper-container {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1.5px solid #c9d2dc;
+    border-radius: 8px;
+    height: 46px;
+    overflow: hidden;
+    transition: .15s;
+    outline: none !important;
+}
+
+.stepper-container:focus-within {
+    border-color: #8fd4ae !important;
+    box-shadow: 0 0 0 4px rgba(143,212,174,0.45) !important;
+    outline: none !important;
+}
+
+input,
+select,
+button{
+    width:100%;
+    height:46px;
+    border:1.5px solid #c9d2dc;
+    border-radius:8px;
+    font-size:16px; 
+    text-align:center;
+    background:#fff;
+    font-weight:400;
+    transition:.15s;
+    outline: none !important;
+}
+
+input:focus, 
+select:focus {
+    font-size: 16px !important;
+    outline: none !important;
+}
+
+input:focus {
+    outline: none !important;
+    -webkit-fullscreen-control-style: none;
+    border-color: #8fd4ae !important;
+    box-shadow: 0 0 0 4px rgba(143,212,174,0.45) !important;
+}
+
+select.custom-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-align-last: center; 
+    padding-right: 24px; 
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 4 5'><path fill='%236b7a90' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 8px;
+}
+
+.stepper-container select {
+    flex: 1;
+    border: none !important;
+    height: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 0;
+    text-align-last: center;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
+}
+
+.step-btn {
+    width: 36px;
+    height: 100%;
+    border: none;
+    background: #f1f4f7;
+    color: #2c3e50;
+    font-size: 18px; 
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    outline: none !important;
+}
+
+.step-btn:hover { background: #e2e8f0; }
+.step-btn:active { background: #cbd5e1; }
+
+.main-btn{
+    flex:1;
+    background:#fff;
+    color:#2c3e50;
+    font-weight:600;
+    cursor:pointer;
+    border:1.5px solid #c9d2dc;
+    transition:.15s;
+}
+
+.main-btn:hover{ background:#f6f8fa; }
+.main-btn:focus, .main-btn:active{
+    outline:none;
+    border-color:#8fd4ae;
+    box-shadow:0 0 0 4px rgba(143,212,174,0.35);
+}
+
+button.clicked-blue{
+    border-color:#8fd4ae !important;
+    box-shadow:0 0 0 4px rgba(143,212,174,0.45) !important;
+}
+
+.reset-btn{
+    width:46px;
+    min-width:46px;
+    background:#fff;
+    color:#2c3e50;
+    border:1.5px solid #c9d2dc;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.15s;
+}
+
+.reset-btn:hover{ background:#f6f8fa; }
+.reset-btn:active, .reset-btn.active-reset{
+    outline:none;
+    border-color:#e74c3c;
+    box-shadow:0 0 0 4px rgba(231,76,60,0.35);
+}
+
+/* Temizleme Butonları */
+.clear-btn-sag {
+    width: 24.7px; 
+    height: 46px;
+    min-width: 24.7px;
+    background: #3498db;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px; 
+}
+
+.clear-btn-isk {
+    width: 100%;
+    height: 26px;
+    min-width: 100%;
+    background: #3498db;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+}
+
+.clear-btn-ort {
+    width:40px;
+    height:46px;
+    min-width:40px;
+    background:#3498db;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    user-select: none;
+}
+
+.clear-btn-sag:hover, .clear-btn-isk:hover, .clear-btn-ort:hover{ background:#2587ca; }
+
+.yellow-bg{background:#fff7a6 !important;}
+.pink-bg{background:#ffd6e8 !important;}
+.green-bg{background:#c8ebd6 !important;}
+.gray-bg{background:#f2f4f7 !important;}
+
+.stepper-container:has(select.green-bg) { background-color: #c8ebd6 !important; }
+.stepper-container:has(select.pink-bg) { background-color: #ffd6e8 !important; }
+
+.row{ display:flex; gap:10px; }
+.row-top{ display:flex; gap:10px; }
+.w-50 { flex: 2; }
+.w-25 { flex: 1; }
+.row-isk{ display:flex; gap:8px; }
+.row .input-group, .row-isk .input-group{ flex:1; }
+.button-row{ display:flex; gap:10px; margin-top:10px; }
+
+/* Sonuç Kutuları */
+.result{
+    display:none;
+    margin-top:20px;
+    background:#f7fbf9;
+    padding:15px;
+    border-radius:10px;
+}
+
+.result.border-style {
+    border-left:4px solid #2ecc71;
+}
+
+.result p{
+    margin:8px 0;
+    font-size:14px;
+    color:#3d4f66;
+}
+
+.result-dinamik p{
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+    color:#2c3e50;
+    line-height:26px;
+}
+
+.highlight{
+    float:right;
+    font-weight:600;
+    color:#2c3e50;
+}
+
+.highlight-bold {
+    float:right;
+    font-weight:700;
+    color:#2c3e50;
+}
+
+.total{
+    color:#2ecc71;
+    font-size:22px;
+    font-weight:700;
+}
+
+.total-cikar {
+    color:#c0392b;
+    font-size:22px;
+    font-weight:700;
+}
+
+.label-text {
+    font-weight: normal;
+    color: #7f8c8d;
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.box{
+    margin-top:12px;
+    padding:10px;
+    background:#eaf7ef;
+    border-left:4px solid #2ecc71;
+    border-radius:8px;
+}
+
+.box p{ margin:6px 0; font-size:13px; }
+
+.creator{
+    margin-top:22px;
+    text-align:center;
+    font-size:12px;
+    color:#9aa6b2;
+    letter-spacing:.4px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <div class="tab-header" id="tabHeader">
+        <button class="tab-btn active" onclick="switchTab('satisTab', 'brut')">Satış Fiyatı Hesapla</button>
+        <button class="tab-btn" onclick="switchTab('karGeriTab', 'karGeriFiyat')">Kâr Geri Gelme</button>
+        <button class="tab-btn" onclick="switchTab('kdvTab', 'kdvDahil')">KDV Hariç Hesapla</button>
+        <button class="tab-btn" onclick="switchTab('ilaveTab', 'ilaveTutar')">Yüzde Oranı Ekle</button>
+        <button class="tab-btn" onclick="switchTab('sayiToplaTab', 'toplaSayi1')">Toplama Sekiz Kutucuk</button>
+        <button class="tab-btn" onclick="switchTab('sayiCikarTab', 'cikarSayi1')">Çıkarma Sekiz Kutucuk</button>
+    </div>
+
+    <div class="tab-header sub-tab-header" id="subTabHeader">
+        <button class="tab-btn" onclick="switchTab('indirimTab', 'fiyat')">Kutu İskontosu Uygula</button>
+        <button class="tab-btn" onclick="switchTab('karsilastirmaTab', 'kutuFiyat')">Kutu Avantajı Nedir</button>
+        <button class="tab-btn" onclick="switchTab('kgLtTab', 'fiyatKg')">Kg Fiyatı Nedir</button>
+        <button class="tab-btn" onclick="switchTab('indirimOranTab', 'eskiFiyat')">İndirim Oranı Nedir</button>
+    </div>
+
+    <div id="satisTab" class="tab-content active">
+        <div class="row-top">
+            <div class="input-group w-50">
+                <label>Birim Fiyat</label>
+                <div class="field-container-isk">
+                    <input id="brut" type="text" inputmode="decimal">
+                    <div class="clear-btn-isk" ontouchstart="temizleSatis(event,'brut')" onclick="temizleSatis(event,'brut')">×</div>
+                </div>
+            </div>
+            <div class="input-group w-25">
+                <label>Miktar</label>
+                <div class="field-container-isk">
+                    <input id="miktar" type="text" inputmode="decimal">
+                    <div class="clear-btn-isk" ontouchstart="temizleSatis(event,'miktar')" onclick="temizleSatis(event,'miktar')">×</div>
+                </div>
+            </div>
+            <div class="input-group w-25">
+                <label>2. Miktar</label>
+                <div class="field-container-isk">
+                    <input id="miktar2" type="text" inputmode="decimal" class="yellow-bg">
+                    <div class="clear-btn-isk" ontouchstart="temizleSatis(event,'miktar2')" onclick="temizleSatis(event,'miktar2')">×</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-isk">
+            <div class="input-group">
+                <label>İsk 1</label>
+                <div class="field-container-isk">
+                    <input id="isk1" type="text" inputmode="decimal">
+                    <div class="clear-btn-isk" ontouchstart="temizleSatis(event,'isk1')" onclick="temizleSatis(event,'isk1')">×</div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>İsk 2</label>
+                <div class="field-container-isk">
+                    <input id="isk2" type="text" inputmode="decimal">
+                    <div class="clear-btn-isk" ontouchstart="temizleSatis(event,'isk2')" onclick="temizleSatis(event,'isk2')">×</div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>İsk 3</label>
+                <div class="field-container-isk">
+                    <input id="isk3" type="text" inputmode="decimal">
+                    <div class="clear-btn-isk" ontouchstart="temizleSatis(event,'isk3')" onclick="temizleSatis(event,'isk3')">×</div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>İsk 4</label>
+                <div class="field-container-isk">
+                    <input id="isk4" type="text" inputmode="decimal">
+                    <div class="clear-btn-isk" ontouchstart="temizleSatis(event,'isk4')" onclick="temizleSatis(event,'isk4')">×</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-group">
+                <label>Kâr %</label>
+                <div class="stepper-container">
+                    <div class="step-btn" onclick="degistirSatis('kar', -1)">-</div>
+                    <select id="kar" class="green-bg">
+                        <option value="5">5</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option>
+                        <option value="25" selected>25</option> <option value="30">30</option> <option value="35">35</option> <option value="40">40</option>
+                        <option value="45">45</option> <option value="50">50</option> <option value="55">55</option> <option value="60">60</option>
+                        <option value="65">65</option> <option value="70">70</option> <option value="75">75</option> <option value="80">80</option>
+                        <option value="85">85</option> <option value="90">90</option> <option value="95">95</option> <option value="100">100</option>
+                    </select>
+                    <div class="step-btn" onclick="degistirSatis('kar', 1)">+</div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>KDV %</label>
+                <div class="stepper-container">
+                    <div class="step-btn" onclick="degistirSatis('kdv', -1)">-</div>
+                    <select id="kdv" class="green-bg">
+                        <option value="1" selected>1</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                    </select>
+                    <div class="step-btn" onclick="degistirSatis('kdv', 1)">+</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-group">
+                <label>Kutu Miktar</label>
+                <div class="field-container">
+                    <input id="kutuMiktar" type="text" inputmode="decimal" class="pink-bg">
+                    <div class="clear-btn-sag" ontouchstart="temizleSatis(event,'kutuMiktar')" onclick="temizleSatis(event,'kutuMiktar')">×</div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Kutu İskonto %</label>
+                <div class="stepper-container">
+                    <div class="step-btn" onclick="degistirSatis('kutuIskonto', -1)">-</div>
+                    <select id="kutuIskonto" class="pink-bg">
+                        <option value="5">%5</option>
+                        <option value="10">%10</option>
+                        <option value="15">%15</option>
+                    </select>
+                    <div class="step-btn" onclick="degistirSatis('kutuIskonto', 1)">+</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnSatis" class="main-btn" onclick="hesaplaSatis()">Hesapla</button>
+            <button id="btnResetSatis" class="reset-btn" onclick="sifirlaSatis(event)">↺</button>
+        </div>
+
+        <div class="result" id="sonucSatis">
+            <p>Birim Fiyat <span id="ham" class="highlight"></span></p>
+            <p><b>Birim Fiyat İskontolu</b> <span id="txtIsk" class="label-text"></span> <span id="net" class="highlight"></span></p>
+            <p><b>Satış Fiyatı Kârlı</b> <span id="txtKar" class="label-text"></span> <span id="karli" class="highlight"></span></p>
+            <p style="color:#c0392b;"><b>Satış Fiyatı KDV DAHİL</b> <span id="txtSatisKdv" class="label-text" style="color:#c0392b;"></span> <span id="satis" class="highlight" style="color:#c0392b;"></span></p>
+            <p>Alış Fiyatı KDV DAHİL <span id="txtAlisKdv" class="label-text"></span> <span id="alisKdvDahil" class="highlight"></span></p>
+
+            <div class="box" id="kutuSonucBox">
+                <p>Kutu Miktar <span id="km" class="highlight"></span></p>
+                <p><b>Kutu Tutarı İskontosuz</b> <span id="ksk" class="highlight"></span></p>
+                <p><b>Kutu İskonto Tutarı</b> <span id="txtKutuIsk" class="label-text"></span> <span id="kit" class="highlight"></span></p>
+                <p style="color:#3498db;"><b>Kutu Satış Fiyatı</b> <span id="ksf" class="highlight" style="color:#3498db;"></span></p>
+            </div>
+        </div>
+        
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="karGeriTab" class="tab-content">
+        <div class="input-group">
+            <label>Fiyat (Mevcut Satış Fiyatı)</label>
+            <div class="field-container">
+                <input id="karGeriFiyat" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleKarGeri(event,'karGeriFiyat')" onclick="temizleKarGeri(event,'karGeriFiyat')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Geri Gelmek İstediğiniz Kâr Oranı (%)</label>
+            <div class="field-container">
+                <input id="karGeriOran" type="text" inputmode="decimal" class="yellow-bg" value="7">
+                <div class="clear-btn-ort" ontouchstart="temizleKarGeri(event,'karGeriOran')" onclick="temizleKarGeri(event,'karGeriOran')">×</div>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnKarGeri" class="main-btn" onclick="hesaplaKarGeri()">Hesapla</button>
+            <button id="btnResetKarGeri" class="reset-btn" onclick="sifirlaKarGeri(event)">↺</button>
+        </div>
+
+        <div class="result" id="sonucKarGeri">
+            <p>Girilen Fiyat <span id="girilenFiyatKarGeri" class="highlight"></span></p>
+            <p>Geri Gelinen Oran <span id="secilenOranKarGeri" class="highlight"></span></p>
+            <div class="box">
+                <p>Düşülen Kâr Tutarı <span id="dusulenKarTutari" class="highlight"></span></p>
+                <p style="font-size:15px; font-weight:700; color:#27ae60;"><b>KÂR GERİ GELİNMİŞ FİYAT</b> <span id="anaFiyatKarGeri" class="highlight" style="color:#27ae60;"></span></p>
+            </div>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="indirimTab" class="tab-content">
+        <div class="input-group">
+            <label>Tek Ürün Fiyatı</label>
+            <div class="field-container">
+                <input id="fiyat" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleIndirim(event,'fiyat')" onclick="temizleIndirim(event,'fiyat')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Adet</label>
+            <div class="field-container">
+                <input id="adet" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleIndirim(event,'adet')" onclick="temizleIndirim(event,'adet')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>İskonto</label>
+            <select id="indirim" class="yellow-bg custom-select">
+                <option value="5">%5</option>
+                <option value="10">%10</option>
+            </select>
+        </div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnIndirim" class="main-btn" onclick="hesaplaIndirim()">Hesapla</button>
+            <button id="btnResetIndirim" class="reset-btn" onclick="sifirlaIndirim(event)">↺</button>
+        </div>
+
+        <div class="result border-style" id="sonucIndirim">
+            <p>Toplam <span id="toplam" class="highlight"></span></p>
+            <p><b>İndirimli Toplam</b> <span id="indirimli" class="highlight"></span></p>
+            <p>Oran <span id="oran" class="highlight"></span></p>
+            <p><b>İndirimli Tek Fiyat</b> <span id="birim" class="highlight"></span></p>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="kdvTab" class="tab-content">
+        <div class="input-group">
+            <label>KDV Dahil Fiyat</label>
+            <div class="field-container">
+                <input id="kdvDahil" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleKdv(event,'kdvDahil')" onclick="temizleKdv(event,'kdvDahil')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>KDV %</label>
+            <select id="kdvSecim" class="custom-select">
+                <option value="1">%1</option>
+                <option value="10">%10</option>
+                <option value="20">%20</option>
+            </select>
+        </div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnKdv" class="main-btn" onclick="hesaplaKdv()">Hesapla</button>
+            <button id="btnResetKdv" class="reset-btn" onclick="sifirlaKdv(event)">↺</button>
+        </div>
+
+        <div class="result border-style" id="sonucKdv">
+            <p>
+                <b>KDV Tutarı (<span id="oranKdv"></span>)</b>
+                <span id="kdvTutar" class="highlight-bold">0,0000</span>
+            </p>
+            <p>
+                <b>KDV Hariç Tutar</b>
+                <span id="haric" class="highlight-bold">0,0000</span>
+            </p>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="indirimOranTab" class="tab-content">
+        <div class="input-group">
+            <label>Ürünün Önceki Fiyatı</label>
+            <div class="field-container">
+                <input id="eskiFiyat" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleIndirimOran(event,'eskiFiyat')" onclick="temizleIndirimOran(event,'eskiFiyat')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Ürünün Yeni Fiyatı</label>
+            <div class="field-container">
+                <input id="yeniFiyat" type="text" inputmode="decimal" class="yellow-bg">
+                <div class="clear-btn-ort" ontouchstart="temizleIndirimOran(event,'yeniFiyat')" onclick="temizleIndirimOran(event,'yeniFiyat')">×</div>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnIndirimOran" class="main-btn" onclick="hesaplaIndirimOran()">Hesapla</button>
+            <button id="btnResetIndirimOran" class="reset-btn" onclick="sifirlaIndirimOran(event)">↺</button>
+        </div>
+
+        <div class="result" id="sonucIndirimOran">
+            <p>Önceki Fiyat <span id="resEski" class="highlight"></span></p>
+            <p>Yeni Fiyat <span id="resYeni" class="highlight"></span></p>
+            <div class="box">
+                <p>İndirim Tutarı <span id="resTutar" class="highlight"></span></p>
+                <p style="font-size:15px; font-weight:700; color:#27ae60;"><b>İndirim Oranı</b> <span id="resIndirimYuzde" class="highlight" style="color:#27ae60;"></span></p>
+            </div>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="karsilastirmaTab" class="tab-content">
+        <div class="input-group">
+            <label>Kutu Ürün Fiyatı</label>
+            <div class="field-container">
+                <input id="kutuFiyat" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleKarsilastirma(event,'kutuFiyat')" onclick="temizleKarsilastirma(event,'kutuFiyat')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Kutu İçindeki Adet</label>
+            <div class="field-container">
+                <input id="adetKarsilastirma" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleKarsilastirma(event,'adetKarsilastirma')" onclick="temizleKarsilastirma(event,'adetKarsilastirma')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Tekli Ürün Satış Fiyatı</label>
+            <div class="field-container">
+                <input id="tekliFiyat" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleKarsilastirma(event,'tekliFiyat')" onclick="temizleKarsilastirma(event,'tekliFiyat')">×</div>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnKarsilastirma" class="main-btn" onclick="hesaplaKarsilastirma()">Hesapla</button>
+            <button id="btnResetKarsilastirma" class="reset-btn" onclick="sifirlaKarsilastirma(event)">↺</button>
+        </div>
+
+        <div class="result" id="sonucKarsilastirma">
+            <p>Kutu 1 Adet Fiyat <span id="resAdetFiyat" class="highlight"></span></p>
+            <p>Tekli Fiyat <span id="resTekli" class="highlight"></span></p>
+            <div class="box">
+                <p><b>Kutu Avantajı</b> <span id="resKarsilastirmaIndirim" class="highlight"></span></p>
+            </div>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="kgLtTab" class="tab-content">
+        <div class="input-group">
+            <label>Fiyat</label>
+            <div class="field-container">
+                <input id="fiyatKg" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleKg(event,'fiyatKg')" onclick="temizleKg(event,'fiyatKg')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Gramaj</label>
+            <div class="field-container">
+                <input id="gramajKg" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleKg(event,'gramajKg')" onclick="temizleKg(event,'gramajKg')">×</div>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnKg" class="main-btn" onclick="hesaplaKg()">Hesapla</button>
+            <button id="btnResetKg" class="reset-btn" onclick="sifirlaKg(event)">↺</button>
+        </div>
+
+        <div class="result" id="sonucKg">
+            <p>Fiyat <span id="resFiyatKg" class="highlight"></span></p>
+            <p>Gramaj <span id="resGramajKg" class="highlight"></span></p>
+            <div class="box">
+                <p style="font-size:15px; font-weight:700; color:#27ae60;"><b>KG / LT Fiyatı</b> <span id="resKgFiyat" class="highlight" style="color:#27ae60;"></span></p>
+            </div>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="sayiToplaTab" class="tab-content">
+        <div id="kutularTopla"></div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnTopla" class="main-btn" onclick="hesaplaTopla()">Hesapla</button>
+            <button id="btnResetTopla" class="reset-btn" onclick="sifirlaTopla(event)">↺</button>
+        </div>
+
+        <div class="result result-dinamik" id="sonucAlaniTopla">
+            <p>Toplam Sonuç <span class="highlight total" id="toplaSonuc">0,00</span></p>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="sayiCikarTab" class="tab-content">
+        <div id="kutularCikar"></div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnCikar" class="main-btn" onclick="hesaplaCikar()">Hesapla</button>
+            <button id="btnResetCikar" class="reset-btn" onclick="sifirlaCikar(event)">↺</button>
+        </div>
+
+        <div class="result result-dinamik" id="sonucAlaniCikar">
+            <p>Kalan Sonuç <span class="highlight total-cikar" id="cikarSonuc">0,00</span></p>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+    <div id="ilaveTab" class="tab-content">
+        <div class="input-group">
+            <label>Tutar (Ana Para)</label>
+            <div class="field-container">
+                <input id="ilaveTutar" type="text" inputmode="decimal">
+                <div class="clear-btn-ort" ontouchstart="temizleIlave(event,'ilaveTutar')" onclick="temizleIlave(event,'ilaveTutar')">×</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Yüzde Oranı (%)</label>
+            <div class="field-container">
+                <input id="ilaveYuzdeDegeri" type="text" inputmode="decimal" class="gray-bg">
+                <div class="clear-btn-ort" ontouchstart="temizleIlave(event,'ilaveYuzdeDegeri')" onclick="temizleIlave(event,'ilaveYuzdeDegeri')">×</div>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button id="hesaplaBtnIlave" class="main-btn" onclick="hesaplaIlave()">Hesapla</button>
+            <button id="btnResetIlave" class="reset-btn" onclick="sifirlaIlave(event)">↺</button>
+        </div>
+
+        <div class="result" id="sonucIlave">
+            <p>Giriş Tutarı <span id="girilenTutarIlave" class="highlight"></span></p>
+            <p>Yüzde Oranı <span id="secilenYuzdeIlave" class="highlight"></span></p>
+            <div class="box">
+                <p>Yüzde Tutarı (<span id="boxYuzdeOranIlave"></span>) <span id="yuzdeTutariIlave" class="highlight"></span></p>
+                <p style="font-size:15px; font-weight:700; color:#27ae60;"><b>TOPLAM SONUÇ</b> <span id="toplamSonucIlave" class="highlight"></span></p>
+            </div>
+        </div>
+
+        <div class="creator">Created by Fatih Mersin</div>
+    </div>
+
+</div>
+
+<script>
+/* 🟢 SEKME DEĞİŞTİRME FONKSİYONU */
+function switchTab(tabId, focusId) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    event.currentTarget.classList.add('active');
+    
+    setTimeout(() => {
+        const targetInput = document.getElementById(focusId);
+        if(targetInput) {
+            targetInput.focus();
+            if(targetInput.tagName === "INPUT") targetInput.select();
+        }
+    }, 50);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    const ilkAlan = document.getElementById("brut");
+    if(ilkAlan) { ilkAlan.focus(); }
+    
+    // 🟢 5. Modül (Toplama Sekiz Kutucuk) oluşturma
+    let toplaKonteyner = document.getElementById("kutularTopla");
+    if(toplaKonteyner) {
+        toplaKonteyner.innerHTML = "";
+        for(let i=1; i<=8; i++){
+            let etiket = i === 1 ? "1. Sayı (Ana Sayı)" : `${i}. Sayı`;
+            toplaKonteyner.innerHTML += `
+            <div class="input-group-dinamik">
+                <label>${etiket}</label>
+                <div class="field-container">
+                    <input type="text" id="toplaSayi${i}" inputmode="decimal" class="topla-input">
+                    <div class="clear-btn-ort" ontouchstart="temizleTopla(event,'toplaSayi${i}')" onclick="temizleTopla(event,'toplaSayi${i}')">×</div>
+                </div>
+            </div>`;
+        }
+        yenidenBaglaToplaEventleri();
+    }
+
+    // 🟢 6. Modül (Çıkarma Sekiz Kutucuk) oluşturma
+    let cikarKonteyner = document.getElementById("kutularCikar");
+    if(cikarKonteyner) {
+        cikarKonteyner.innerHTML = "";
+        for(let i=1; i<=8; i++){
+            let etiket = i === 1 ? "1. Sayı (Ana Sayı)" : `${i}. Sayı`;
+            cikarKonteyner.innerHTML += `
+            <div class="input-group-dinamik">
+                <label>${etiket}</label>
+                <div class="field-container">
+                    <input type="text" id="cikarSayi${i}" inputmode="decimal" class="cikar-input">
+                    <div class="clear-btn-ort" ontouchstart="temizleCikar(event,'cikarSayi${i}')" onclick="temizleCikar(event,'cikarSayi${i}')">×</div>
+                </div>
+            </div>`;
+        }
+        yenidenBaglaCikarEventleri();
+    }
+
+    /* MOUSE TEKERLEĞİ İLE YATAY KAYDIRMA DESTEĞİ */
+    const tabHeader = document.getElementById("tabHeader");
+    if(tabHeader) {
+        tabHeader.addEventListener("wheel", (e) => {
+            e.preventDefault();
+            tabHeader.scrollLeft += e.deltaY;
+        });
+    }
+
+    const subTabHeader = document.getElementById("subTabHeader");
+    if(subTabHeader) {
+        subTabHeader.addEventListener("wheel", (e) => {
+            e.preventDefault();
+            subTabHeader.scrollLeft += e.deltaY;
+        });
+    }
+});
+
+function formatParaGenel(sayi) {
+    return sayi.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/* ==========================================================================
+   1. MODÜLÜN SCRIPT ALANI (SATIŞ FİYATI HESAPLAMA)
+   ========================================================================== */
+function degistirSatis(id, yon) {
+    let s = document.getElementById(id);
+    let yeniIndex = s.selectedIndex + yon;
+    if (yeniIndex < 0) { yeniIndex = 0; }
+    else if (yeniIndex >= s.options.length) { yeniIndex = s.options.length - 1; }
+    s.selectedIndex = yeniIndex;
+    s.dispatchEvent(new Event('change'));
+}
+
+function temizleSatis(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizSatis();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gSatis(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function alanBosMuSatis(id){
+    return document.getElementById(id).value.trim() === "";
+}
+
+function hesaplaSatis(){
+    let btn=document.getElementById("hesaplaBtnSatis");
+    btn.classList.add("clicked-blue");
+    
+    let brut=gSatis("brut");
+    let m1=gSatis("miktar") || 1;
+    let m2=gSatis("miktar2") || 1;
+    let isk1=gSatis("isk1");
+    let isk2=gSatis("isk2");
+    let isk3=gSatis("isk3");
+    let isk4=gSatis("isk4");
+    let kar=parseFloat(document.getElementById("kar").value);
+    let kdv=parseFloat(document.getElementById("kdv").value);
+    let km=gSatis("kutuMiktar");
+    let ki=parseFloat(document.getElementById("kutuIskonto").value);
+
+    let ham=(brut/m1)/m2;
+    let net=ham*(1-isk1/100)*(1-isk2/100)*(1-isk3/100)*(1-isk4/100);
+    let toplamIskontoYuzdesi = ham > 0 ? ((ham - net) / ham) * 100 : 0;
+    let karli=net*(1+kar/100);
+    let satis=karli*(1+kdv/100);
+    let alisKdvDahil = net * (1 + kdv / 100);
+    let iskontosuzKutu=satis*km;
+
+    document.getElementById("txtIsk").innerText = toplamIskontoYuzdesi > 0 ? "(%" + toplamIskontoYuzdesi.toFixed(1) + ")" : "";
+    document.getElementById("txtKar").innerText = "(%" + kar + ")";
+    document.getElementById("txtSatisKdv").innerText = "(%" + kdv + ")";
+    document.getElementById("txtAlisKdv").innerText = "(%" + kdv + ")";
+    document.getElementById("txtKutuIsk").innerText = "(%" + ki + ")";
+
+    document.getElementById("ham").innerText=formatParaGenel(ham);
+    document.getElementById("net").innerText=formatParaGenel(net);
+    document.getElementById("karli").innerText=formatParaGenel(karli);
+    document.getElementById("satis").innerText=formatParaGenel(satis);
+    document.getElementById("alisKdvDahil").innerText=formatParaGenel(alisKdvDahil);
+
+    if(alanBosMuSatis("kutuMiktar")) {
+        document.getElementById("kutuSonucBox").style.display = "none";
+    } else {
+        document.getElementById("kutuSonucBox").style.display = "block";
+        document.getElementById("km").innerText=formatParaGenel(km).replace(",00","");
+        document.getElementById("kit").innerText=formatParaGenel(iskontosuzKutu*(ki/100));
+        document.getElementById("ksk").innerText=formatParaGenel(iskontosuzKutu);
+        document.getElementById("ksf").innerText=formatParaGenel(iskontosuzKutu*(1-ki/100));
+    }
+    document.getElementById("sonucSatis").style.display="block";
+}
+
+function hesapGecersizSatis(){
+    document.getElementById("sonucSatis").style.display="none";
+    document.getElementById("hesaplaBtnSatis").classList.remove("clicked-blue");
+}
+
+function sifirlaSatis(e){
+    if(e) e.preventDefault();
+    document.querySelectorAll("#satisTab input").forEach(i=>i.value="");
+    document.getElementById("kar").value = "25";
+    document.getElementById("kdv").value = "1";
+    document.getElementById("kutuIskonto").selectedIndex = 0;
+    document.getElementById("sonucSatis").style.display="none";
+    document.getElementById("hesaplaBtnSatis").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetSatis");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("brut");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+/* ==========================================================================
+   2. MODÜLÜN SCRIPT ALANI (KÂR GERI GELME)
+   ========================================================================== */
+function temizleKarGeri(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizKarGeri();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gKarGeri(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaKarGeri(){
+    let btn=document.getElementById("hesaplaBtnKarGeri");
+    btn.classList.add("clicked-blue");
+
+    let f=gKarGeri("karGeriFiyat");
+    let o=gKarGeri("karGeriOran");
+
+    let anaFiyat = f / (1 + o/100);
+    let dusulenKar = f - anaFiyat;
+
+    document.getElementById("girilenFiyatKarGeri").innerText=formatParaGenel(f);
+    document.getElementById("secilenOranKarGeri").innerText="%" + o.toLocaleString('tr-TR');
+    document.getElementById("dusulenKarTutari").innerText=formatParaGenel(dusulenKar);
+    document.getElementById("anaFiyatKarGeri").innerText=formatParaGenel(anaFiyat);
+
+    document.getElementById("sonucKarGeri").style.display="block";
+}
+
+function hesapGecersizKarGeri(){
+    document.getElementById("sonucKarGeri").style.display="none";
+    document.getElementById("hesaplaBtnKarGeri").classList.remove("clicked-blue");
+}
+
+function sifirlaKarGeri(e){
+    if(e) e.preventDefault();
+    document.getElementById("karGeriFiyat").value="";
+    document.getElementById("karGeriOran").value="7";
+    document.getElementById("sonucKarGeri").style.display="none";
+    document.getElementById("hesaplaBtnKarGeri").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetKarGeri");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("karGeriFiyat");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+/* ==========================================================================
+   3. MODÜLÜN SCRIPT ALANI (İNDİRİMLİ FİYAT HESAPLAMA)
+   ========================================================================== */
+function temizleIndirim(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizIndirim();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gIndirim(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaIndirim(){
+    let btn=document.getElementById("hesaplaBtnIndirim");
+    btn.classList.add("clicked-blue");
+
+    let f=gIndirim("fiyat");
+    let a=gIndirim("adet") || 1;
+    let ind=parseFloat(document.getElementById("indirim").value);
+
+    let toplam=f*a;
+    let indirimli=toplam*(1-ind/100);
+    let birim=indirimli/a;
+
+    document.getElementById("toplam").innerText=formatParaGenel(toplam);
+    document.getElementById("indirimli").innerText=formatParaGenel(indirimli);
+    document.getElementById("oran").innerText="%" + ind;
+    document.getElementById("birim").innerText=formatParaGenel(birim);
+
+    document.getElementById("sonucIndirim").style.display="block";
+}
+
+function hesapGecersizIndirim(){
+    document.getElementById("sonucIndirim").style.display="none";
+    document.getElementById("hesaplaBtnIndirim").classList.remove("clicked-blue");
+}
+
+function sifirlaIndirim(e){
+    if(e) e.preventDefault();
+    document.querySelectorAll("#indirimTab input").forEach(i=>i.value="");
+    document.getElementById("indirim").selectedIndex = 0;
+    document.getElementById("sonucIndirim").style.display="none";
+    document.getElementById("hesaplaBtnIndirim").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetIndirim");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("fiyat");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+/* ==========================================================================
+   4. MODÜLÜN SCRIPT ALANI (KDV HARİÇ HESAPLAMA)
+   ========================================================================== */
+function temizleKdv(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizKdv();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gKdv(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaKdv(){
+    let btn=document.getElementById("hesaplaBtnKdv");
+    btn.classList.add("clicked-blue");
+
+    let kDahil=gKdv("kdvDahil");
+    let secim=parseFloat(document.getElementById("kdvSecim").value);
+
+    let haric=kDahil / (1 + secim/100);
+    let kTutar=kDahil - haric;
+
+    document.getElementById("oranKdv").innerText="%" + secim;
+    
+    let f = new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+    document.getElementById("kdvTutar").innerText=f.format(kTutar);
+    document.getElementById("haric").innerText=f.format(haric);
+
+    document.getElementById("sonucKdv").style.display="block";
+}
+
+function hesapGecersizKdv(){
+    document.getElementById("sonucKdv").style.display="none";
+    document.getElementById("hesaplaBtnKdv").classList.remove("clicked-blue");
+}
+
+function sifirlaKdv(e){
+    if(e) e.preventDefault();
+    document.getElementById("kdvDahil").value="";
+    document.getElementById("kdvSecim").selectedIndex = 0;
+    document.getElementById("sonucKdv").style.display="none";
+    document.getElementById("hesaplaBtnKdv").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetKdv");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("kdvDahil");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+/* ==========================================================================
+   5. MODÜLÜN SCRIPT ALANI (TOPLAMA SEKİZ KUTUCUK)
+   ========================================================================== */
+function yenidenBaglaToplaEventleri(){
+    let alanlarTopla = document.querySelectorAll(".topla-input");
+    alanlarTopla.forEach((el,i)=>{
+        el.removeEventListener("input", hesapGecersizTopla);
+        el.addEventListener("input", hesapGecersizTopla);
+        
+        el.addEventListener("keydown",(e)=>{
+            if(e.key==="Enter"){
+                e.preventDefault();
+                document.activeElement.blur();
+                let next = alanlarTopla[i+1];
+                if(next){
+                    setTimeout(()=>{
+                        next.focus();
+                        if(next.tagName==="INPUT") next.select();
+                    },0);
+                }else{
+                    hesaplaTopla();
+                }
+            }
+            if(e.key==="Escape" && !e.shiftKey){
+                e.preventDefault();
+                if(i === 0) return; 
+                document.activeElement.blur();
+                let prev = alanlarTopla[i-1];
+                if(prev){
+                    setTimeout(()=>{
+                        prev.focus();
+                        if(prev.tagName==="INPUT") prev.select();
+                    },0);
+                }
+            }
+        });
+    });
+}
+
+function temizleTopla(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizTopla();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gTopla(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaTopla(){
+    let btn=document.getElementById("hesaplaBtnTopla");
+    btn.classList.add("clicked-blue");
+
+    let toplam = 0;
+    for(let i=1; i<=8; i++){
+        toplam += gTopla("toplaSayi"+i);
+    }
+    document.getElementById("toplaSonuc").innerText=formatParaGenel(toplam);
+    document.getElementById("sonucAlaniTopla").style.display="block";
+}
+
+function hesapGecersizTopla(){
+    document.getElementById("sonucAlaniTopla").style.display="none";
+    document.getElementById("hesaplaBtnTopla").classList.remove("clicked-blue");
+}
+
+function sifirlaTopla(e){
+    if(e) e.preventDefault();
+    for(let i=1; i<=8; i++){
+        document.getElementById("toplaSayi"+i).value="";
+    }
+    document.getElementById("toplaSonuc").innerText="0,00";
+    document.getElementById("sonucAlaniTopla").style.display="none";
+    document.getElementById("hesaplaBtnTopla").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetTopla");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("toplaSayi1");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+/* ==========================================================================
+   6. MODÜLÜN SCRIPT ALANI (ÇIKARMA SEKİZ KUTUCUK)
+   ========================================================================== */
+function yenidenBaglaCikarEventleri(){
+    let alanlarCikar = document.querySelectorAll(".cikar-input");
+    alanlarCikar.forEach((el,i)=>{
+        el.removeEventListener("input", hesapGecersizCikar);
+        el.addEventListener("input", hesapGecersizCikar);
+        
+        el.addEventListener("keydown",(e)=>{
+            if(e.key==="Enter"){
+                e.preventDefault();
+                document.activeElement.blur();
+                let next = alanlarCikar[i+1];
+                if(next){
+                    setTimeout(()=>{
+                        next.focus();
+                        if(next.tagName==="INPUT") next.select();
+                    },0);
+                }else{
+                    hesaplaCikar();
+                }
+            }
+            if(e.key==="Escape" && !e.shiftKey){
+                e.preventDefault();
+                if(i === 0) return; 
+                document.activeElement.blur();
+                let prev = alanlarCikar[i-1];
+                if(prev){
+                    setTimeout(()=>{
+                        prev.focus();
+                        if(prev.tagName==="INPUT") prev.select();
+                    },0);
+                }
+            }
+        });
+    });
+}
+
+function temizleCikar(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizCikar();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gCikar(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaCikar(){
+    let btn=document.getElementById("hesaplaBtnCikar");
+    btn.classList.add("clicked-blue");
+
+    let anaSayi = gCikar("cikarSayi1");
+    let kalan = anaSayi;
+
+    for(let i=2; i<=8; i++){
+        kalan -= gCikar("cikarSayi"+i);
+    }
+    document.getElementById("cikarSonuc").innerText=formatParaGenel(kalan);
+    document.getElementById("sonucAlaniCikar").style.display="block";
+}
+
+function hesapGecersizCikar(){
+    document.getElementById("sonucAlaniCikar").style.display="none";
+    document.getElementById("hesaplaBtnCikar").classList.remove("clicked-blue");
+}
+
+function sifirlaCikar(e){
+    if(e) e.preventDefault();
+    for(let i=1; i<=8; i++){
+        document.getElementById("cikarSayi"+i).value="";
+    }
+    document.getElementById("cikarSonuc").innerText="0,00";
+    document.getElementById("sonucAlaniCikar").style.display="none";
+    document.getElementById("hesaplaBtnCikar").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetCikar");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("cikarSayi1");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+/* ==========================================================================
+   SUB BAR MODÜLLERİ (İNDİRİM ORANI, KUTU AVANTAJI, KG/LT)
+   ========================================================================== */
+function temizleIndirimOran(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizIndirimOran();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gIndirimOran(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaIndirimOran(){
+    let btn=document.getElementById("hesaplaBtnIndirimOran");
+    btn.classList.add("clicked-blue");
+
+    let eski=gIndirimOran("eskiFiyat");
+    let yeni=gIndirimOran("yeniFiyat");
+
+    if(eski === 0){
+        document.getElementById("sonucIndirimOran").style.display="none";
+        return;
+    }
+
+    let fark=eski-yeni;
+    let yuzde=(fark/eski)*100;
+
+    document.getElementById("resEski").innerText=formatParaGenel(eski);
+    document.getElementById("resYeni").innerText=formatParaGenel(yeni);
+    document.getElementById("resTutar").innerText=formatParaGenel(fark);
+    document.getElementById("resIndirimYuzde").innerText="%" + yuzde.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    document.getElementById("sonucIndirimOran").style.display="block";
+}
+
+function hesapGecersizIndirimOran(){
+    document.getElementById("sonucIndirimOran").style.display="none";
+    document.getElementById("hesaplaBtnIndirimOran").classList.remove("clicked-blue");
+}
+
+function sifirlaIndirimOran(e){
+    if(e) e.preventDefault();
+    document.querySelectorAll("#indirimOranTab input").forEach(i=>i.value="");
+    document.getElementById("sonucIndirimOran").style.display="none";
+    document.getElementById("hesaplaBtnIndirimOran").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetIndirimOran");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("eskiFiyat");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+function temizleKarsilastirma(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizKarsilastirma();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gKarsilastirma(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaKarsilastirma(){
+    let btn=document.getElementById("hesaplaBtnKarsilastirma");
+    btn.classList.add("clicked-blue");
+
+    let kFiyat=gKarsilastirma("kutuFiyat");
+    let adet=gKarsilastirma("adetKarsilastirma") || 1;
+    let tekli=gKarsilastirma("tekliFiyat");
+
+    let kutuBirim=kFiyat/adet;
+    
+    let avantajMetni = "";
+    if(tekli > 0 && kutuBirim > 0){
+        if(kutuBirim < tekli){
+            let yuzde=((tekli - kutuBirim) / tekli) * 100;
+            avantajMetni = "Kutu %" + yuzde.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Avantajlı";
+        } else if(kutuBirim > tekli){
+            let yuzde=((kutuBirim - tekli) / tekli) * 100;
+            avantajMetni = "Tekli %" + yuzde.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Avantajlı";
+        } else {
+            avantajMetni = "Fiyatlar Eşit";
+        }
+    } else {
+        avantajMetni = "Hesaplanamadı";
+    }
+
+    document.getElementById("resAdetFiyat").innerText=formatParaGenel(kutuBirim);
+    document.getElementById("resTekli").innerText=formatParaGenel(tekli);
+    document.getElementById("resKarsilastirmaIndirim").innerText=avantajMetni;
+
+    document.getElementById("sonucKarsilastirma").style.display="block";
+}
+
+function hesapGecersizKarsilastirma(){
+    document.getElementById("sonucKarsilastirma").style.display="none";
+    document.getElementById("hesaplaBtnKarsilastirma").classList.remove("clicked-blue");
+}
+
+function sifirlaKarsilastirma(e){
+    if(e) e.preventDefault();
+    document.querySelectorAll("#karsilastirmaTab input").forEach(i=>i.value="");
+    document.getElementById("sonucKarsilastirma").style.display="none";
+    document.getElementById("hesaplaBtnKarsilastirma").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetKarsilastirma");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("kutuFiyat");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+function temizleKg(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizKg();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gKg(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaKg(){
+    let btn=document.getElementById("hesaplaBtnKg");
+    btn.classList.add("clicked-blue");
+
+    let f=gKg("fiyatKg");
+    let g=gKg("gramajKg");
+
+    if(g===0){
+        document.getElementById("sonucKg").style.display="none";
+        return;
+    }
+
+    let kgFiyat=(f/g)*1000;
+
+    document.getElementById("resFiyatKg").innerText=formatParaGenel(f);
+    document.getElementById("resGramajKg").innerText=g.toLocaleString('tr-TR') + " gr / ml";
+    document.getElementById("resKgFiyat").innerText=formatParaGenel(kgFiyat) + " TL";
+
+    document.getElementById("sonucKg").style.display="block";
+}
+
+function hesapGecersizKg(){
+    document.getElementById("sonucKg").style.display="none";
+    document.getElementById("hesaplaBtnKg").classList.remove("clicked-blue");
+}
+
+function sifirlaKg(e){
+    if(e) e.preventDefault();
+    document.querySelectorAll("#kgLtTab input").forEach(i=>i.value="");
+    document.getElementById("sonucKg").style.display="none";
+    document.getElementById("hesaplaBtnKg").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetKg");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("fiyatKg");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+/* ==========================================================================
+   10. MODÜLÜN SCRIPT ALANI (YÜZDE ORANI EKLE)
+   ========================================================================== */
+function temizleIlave(e,id){
+    e.preventDefault();
+    e.stopPropagation();
+    let el = document.getElementById(id);
+    el.value = "";
+    hesapGecersizIlave();
+    el.focus();
+    setTimeout(() => {
+        el.focus();
+        if(typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(0, 0);
+        }
+    }, 10);
+}
+
+function gIlave(id){
+    let v=document.getElementById(id).value.trim();
+    if(!v) return 0;
+    return parseFloat(v.replace(/\./g,"").replace(/,/g,".")) || 0;
+}
+
+function hesaplaIlave(){
+    let btn=document.getElementById("hesaplaBtnIlave");
+    btn.classList.add("clicked-blue");
+
+    let t=gIlave("ilaveTutar");
+    let y=gIlave("ilaveYuzdeDegeri");
+
+    let yTutar = t * (y / 100);
+    let tSonuc = t + yTutar;
+
+    document.getElementById("girilenTutarIlave").innerText=formatParaGenel(t);
+    document.getElementById("secilenYuzdeIlave").innerText="%" + y.toLocaleString('tr-TR');
+    document.getElementById("boxYuzdeOranIlave").innerText="%" + y.toLocaleString('tr-TR');
+    document.getElementById("yuzdeTutariIlave").innerText=formatParaGenel(yTutar);
+    document.getElementById("toplamSonucIlave").innerText=formatParaGenel(tSonuc);
+
+    document.getElementById("sonucIlave").style.display="block";
+}
+
+function hesapGecersizIlave(){
+    document.getElementById("sonucIlave").style.display="none";
+    document.getElementById("hesaplaBtnIlave").classList.remove("clicked-blue");
+}
+
+function sifirlaIlave(e){
+    if(e) e.preventDefault();
+    document.querySelectorAll("#ilaveTab input").forEach(i=>i.value="");
+    document.getElementById("sonucIlave").style.display="none";
+    document.getElementById("hesaplaBtnIlave").classList.remove("clicked-blue");
+    
+    let resetBtn = document.getElementById("btnResetIlave");
+    resetBtn.classList.add("active-reset");
+    setTimeout(() => { resetBtn.classList.remove("active-reset"); }, 300);
+    setTimeout(() => {
+        const ilkAlan = document.getElementById("ilaveTutar");
+        if(ilkAlan) { ilkAlan.focus(); }
+    }, 50);
+}
+
+/* ==========================================================================
+   INPUT ELEMENTLERİ İÇİN GENEL KLAVYE VE INPUT EVENT TANIMLAMALARI
+   ========================================================================== */
+let alanlarSatis = document.querySelectorAll("#satisTab input");
+let alanlarIndirim = document.querySelectorAll("#indirimTab input");
+let alanlarKdv = document.querySelectorAll("#kdvTab input");
+let alanlarIndirimOran = document.querySelectorAll("#indirimOranTab input");
+let alanlarKarsilastirma = document.querySelectorAll("#karsilastirmaTab input");
+let alanlarKg = document.querySelectorAll("#kgLtTab input");
+let alanlarIlave = document.querySelectorAll("#ilaveTab input");
+let alanlarKarGeri = document.querySelectorAll("#karGeriTab input");
+
+alanlarSatis.forEach(el => el.addEventListener("input", hesapGecersizSatis));
+alanlarIndirim.forEach(el => el.addEventListener("input", hesapGecersizIndirim));
+alanlarKdv.forEach(el => el.addEventListener("input", hesapGecersizKdv));
+alanlarIndirimOran.forEach(el => el.addEventListener("input", hesapGecersizIndirimOran));
+alanlarKarsilastirma.forEach(el => el.addEventListener("input", hesapGecersizKarsilastirma));
+alanlarKg.forEach(el => el.addEventListener("input", hesapGecersizKg));
+alanlarIlave.forEach(el => el.addEventListener("input", hesapGecersizIlave));
+alanlarKarGeri.forEach(el => el.addEventListener("input", hesapGecersizKarGeri));
+
+// Satış Sekmesi Tuş Atamaları
+alanlarSatis.forEach((el,i)=>{
+    el.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            document.activeElement.blur();
+            let next = alanlarSatis[i+1];
+            if(next){
+                setTimeout(()=>{
+                    next.focus();
+                    if(next.tagName==="INPUT") next.select();
+                },0);
+            }else{
+                hesaplaSatis();
+            }
+        }
+        if(e.key==="Escape" && !e.shiftKey){
+            e.preventDefault();
+            if(i === 0) return; 
+            document.activeElement.blur();
+            let prev = alanlarSatis[i-1];
+            if(prev){
+                setTimeout(()=>{
+                    prev.focus();
+                    if(prev.tagName==="INPUT") prev.select();
+                },0);
+            }
+        }
+    });
+});
+
+// İndirim Sekmesi Tuş Atamaları
+alanlarIndirim.forEach((el,i)=>{
+    el.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            document.activeElement.blur();
+            let next = alanlarIndirim[i+1];
+            if(next){
+                setTimeout(()=>{
+                    next.focus();
+                    if(next.tagName==="INPUT") next.select();
+                },0);
+            }else{
+                hesaplaIndirim();
+            }
+        }
+        if(e.key==="Escape" && !e.shiftKey){
+            e.preventDefault();
+            if(i === 0) return; 
+            document.activeElement.blur();
+            let prev = alanlarIndirim[i-1];
+            if(prev){
+                setTimeout(()=>{
+                    prev.focus();
+                    if(prev.tagName==="INPUT") prev.select();
+                },0);
+            }
+        }
+    });
+});
+
+// KDV Sekmesi Tuş Atamaları
+alanlarKdv.forEach((el,i)=>{
+    el.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            document.activeElement.blur();
+            hesaplaKdv();
+        }
+    });
+});
+
+// İndirim Oranı Sekmesi Tuş Atamaları
+alanlarIndirimOran.forEach((el,i)=>{
+    el.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            document.activeElement.blur();
+            let next = alanlarIndirimOran[i+1];
+            if(next){
+                setTimeout(()=>{
+                    next.focus();
+                    if(next.tagName==="INPUT") next.select();
+                },0);
+            }else{
+                hesaplaIndirimOran();
+            }
+        }
+        if(e.key==="Escape" && !e.shiftKey){
+            e.preventDefault();
+            if(i === 0) return; 
+            document.activeElement.blur();
+            let prev = alanlarIndirimOran[i-1];
+            if(prev){
+                setTimeout(()=>{
+                    prev.focus();
+                    if(prev.tagName==="INPUT") prev.select();
+                },0);
+            }
+        }
+    });
+});
+
+// Karşılaştırma Sekmesi Tuş Atamaları
+alanlarKarsilastirma.forEach((el,i)=>{
+    el.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            document.activeElement.blur();
+            let next = alanlarKarsilastirma[i+1];
+            if(next){
+                setTimeout(()=>{
+                    next.focus();
+                    if(next.tagName==="INPUT") next.select();
+                },0);
+            }else{
+                hesaplaKarsilastirma();
+            }
+        }
+        if(e.key==="Escape" && !e.shiftKey){
+            e.preventDefault();
+            if(i === 0) return; 
+            document.activeElement.blur();
+            let prev = alanlarKarsilastirma[i-1];
+            if(prev){
+                setTimeout(()=>{
+                    prev.focus();
+                    if(prev.tagName==="INPUT") prev.select();
+                },0);
+            }
+        }
+    });
+});
+
+// KG/LT Sekmesi Tuş Atamaları
+alanlarKg.forEach((el,i)=>{
+    el.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            document.activeElement.blur();
+            let next = alanlarKg[i+1];
+            if(next){
+                setTimeout(()=>{
+                    next.focus();
+                    if(next.tagName==="INPUT") next.select();
+                },0);
+            }else{
+                hesaplaKg();
+            }
+        }
+        if(e.key==="Escape" && !e.shiftKey){
+            e.preventDefault();
+            if(i === 0) return; 
+            document.activeElement.blur();
+            let prev = alanlarKg[i-1];
+            if(prev){
+                setTimeout(()=>{
+                    prev.focus();
+                    if(prev.tagName==="INPUT") prev.select();
+                },0);
+            }
+        }
+    });
+});
+
+// İlave Sekmesi Tuş Atamaları
+alanlarIlave.forEach((el,i)=>{
+    el.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            document.activeElement.blur();
+            let next = alanlarIlave[i+1];
+            if(next){
+                setTimeout(()=>{
+                    next.focus();
+                    if(next.tagName==="INPUT") next.select();
+                },0);
+            }else{
+                hesaplaIlave();
+            }
+        }
+        if(e.key==="Escape" && !e.shiftKey){
+            e.preventDefault();
+            if(i === 0) return; 
+            document.activeElement.blur();
+            let prev = alanlarIlave[i-1];
+            if(prev){
+                setTimeout(()=>{
+                    prev.focus();
+                    if(prev.tagName==="INPUT") prev.select();
+                },0);
+            }
+        }
+    });
+});
+
+// Kâr Geri Gelme Sekmesi Tuş Atamaları
+alanlarKarGeri.forEach((el,i)=>{
+    el.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            document.activeElement.blur();
+            let next = alanlarKarGeri[i+1];
+            if(next){
+                setTimeout(()=>{
+                    next.focus();
+                    if(next.tagName==="INPUT") next.select();
+                },0);
+            }else{
+                hesaplaKarGeri();
+            }
+        }
+        if(e.key==="Escape" && !e.shiftKey){
+            e.preventDefault();
+            if(i === 0) return; 
+            document.activeElement.blur();
+            let prev = alanlarKarGeri[i-1];
+            if(prev){
+                setTimeout(()=>{
+                    prev.focus();
+                    if(prev.tagName==="INPUT") prev.select();
+                },0);
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>
