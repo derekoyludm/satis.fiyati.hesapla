@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, user-scalable=no">
 <title>Hesaplama Araçları (Super App)</title>
 
-<link rel="icon" type="image/png" sizes="512x512" href="tag-512.png">
+<link class="favicon" rel="icon" type="image/png" sizes="512x512" href="tag-512.png">
 <link rel="apple-touch-icon" sizes="512x512" href="tag-512.png">
 
 <style>
@@ -65,13 +65,13 @@ body{
     gap: 6px;
 }
 
-/* Aktif olan ana menü grubunun stili */
+/* Aktif olan ana menu grubunun stili */
 #mainTabHeader .tab-btn.active {
     background: #2c3e50; 
     color: #fff;
 }
 
-/* 🔼 Ok işareti stili */
+/* 🔼 Ok isareti stili */
 .tab-btn::after {
     content: "▼";
     font-size: 13px;
@@ -80,12 +80,12 @@ body{
     transition: transform 0.2s;
 }
 
-/* 🔽 Menü açıldığında ok aşağı dönecek */
+/* 🔽 Menu acildiginda ok asagi donecek */
 #mainTabHeader .tab-btn.active::after {
     transform: rotate(0deg);
 }
 
-/* 🟢 Dinamik Aktif Sayfa Bilgi Bandı */
+/* 🟢 Dinamik Aktif Sayfa Bilgi Bandi */
 .active-page-indicator {
     background: #e4e9ed;
     border-radius: 8px;
@@ -99,7 +99,7 @@ body{
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
 }
 
-/* 🟢 Aşağı Açılır Menü (Dropdown) Tasarımı */
+/* 🟢 Asagi Acilir Menu (Dropdown) Tasarimi */
 .dropdown-menu {
     display: none;
     position: absolute;
@@ -139,14 +139,14 @@ body{
     background: #f1f4f7;
 }
 
-/* Seçili olan alt modülün stili */
+/* Secili olan alt modulun stili */
 .dropdown-item.active {
     background: #3498db;
     color: #fff;
     font-weight: 600;
 }
 
-/* 🟢 İçerik Alanları Kontrolü */
+/* 🟢 Icerik Alanlari Kontrolu */
 .tab-content {
     display: none;
     background:#fff;
@@ -160,7 +160,7 @@ body{
     display: block;
 }
 
-/* GENEL STİLLER */
+/* GENEL STILLER */
 .input-group{
     margin-bottom:18px;
 }
@@ -293,17 +293,15 @@ select.custom-select {
 }
 
 .main-btn:hover{ background:#f6f8fa; }
-.main-btn:focus{
+.main-btn:focus, .main-btn:active{
     outline:none;
     border-color:#8fd4ae;
     box-shadow:0 0 0 4px rgba(143,212,174,0.35);
 }
 
-/* 🟢 Hesapla Penceresi Açıkken Butonun Yeşil Kalması İçin Sınıf */
-.main-btn.active-calc {
-    border-color: #8fd4ae !important;
-    box-shadow: 0 0 0 4px rgba(143,212,174,0.45) !important;
-    background: #fff !important;
+button.clicked-blue, .main-btn.active-calc{
+    border-color:#8fd4ae !important;
+    box-shadow:0 0 0 4px rgba(143,212,174,0.45) !important;
 }
 
 .add-box-btn {
@@ -333,12 +331,10 @@ select.custom-select {
 }
 
 .reset-btn:hover{ background:#f6f8fa; }
-
-/* 🔴 Reset Tuşuna Basıldığında Kırmızı Yanma Sınıfı */
-.reset-btn.active-reset{
+.reset-btn:active, .reset-btn.active-reset{
     outline:none !important;
     border-color:#e74c3c !important;
-    box-shadow:0 0 0 4px rgba(231,76,60,0.45) !important;
+    box-shadow:0 0 0 4px rgba(231,76,60,0.35) !important;
 }
 
 .clear-btn-sag {
@@ -424,7 +420,7 @@ select.custom-select {
 .row .input-group, .row-isk .input-group{ flex:1; }
 .button-row{ display:flex; gap:10px; margin-top:10px; }
 
-/* Sonuç Kutuları */
+/* Sonuc Kutulari */
 .result{
     display:none;
     margin-top:20px;
@@ -500,7 +496,7 @@ select.custom-select {
     letter-spacing:.4px;
 }
 
-/* Hızlı Fatura Düzen Stilleri */
+/* Hizli Fatura Duzen Stilleri */
 .fatura-row {
     display: flex;
     gap: 6px;
@@ -568,7 +564,7 @@ select.custom-select {
 
         <div id="dropdown_nedirGroup" class="dropdown-menu">
             <button class="dropdown-item" onclick="switchTab('karsilastirmaTab', 'kutuFiyat', this, 'Nedir? > Kutu Avantajı Nedir')">Kutu Avantajı Nedir</button>
-            <button class="dropdown-item" onclick="switchTab('kgLtTab', 'fiyatKg', this, 'Nedir? > Kg Fiyatı Nedir')">Kg Fiyatı Nedir</button>
+            <button class="dropdown-item" onclick="switchTab('kgLtTab', 'fiyatKg', this, 'Nedir? > Kg - Lt Fiyatı Nedir')">Kg - Lt Fiyatı Nedir</button>
             <button class="dropdown-item" onclick="switchTab('indirimOranTab', 'eskiFiyat', this, 'Nedir? > İndirim Oranı Nedir')">İndirim Oranı Nedir</button>
         </div>
 
@@ -848,7 +844,7 @@ select.custom-select {
         </div>
 
         <div class="result" id="sonucIlave">
-            <p>Girilen Tutar <span id="girilenTutarIlave" class="highlight"></span></p>
+            <p>Girilen Tutar <span id="gridilenTutarIlave" class="highlight"></span></p>
             <p>Seçilen Yüzde <span id="secilenYuzdeIlave" class="highlight"></span></p>
             <div class="box">
                 <p>Üzerine Eklenen Tutar (%<span id="boxYuzdeOranIlave"></span>) <span id="ilaveUzerineEklenenTutar" class="highlight"></span></p>
@@ -944,9 +940,9 @@ select.custom-select {
         </div>
 
         <div class="input-group">
-            <label>Gramaj</label>
+            <label>Gramaj (KG / LT)</label>
             <div class="field-container">
-                <input id="gramajKg" type="text" inputmode="decimal">
+                <input id="gramajKg" type="text" inputmode="decimal" placeholder="Örn: 0,500">
                 <div class="clear-btn-ort" ontouchstart="temizleKg(event,'gramajKg')" onclick="temizleKg(event,'gramajKg')">×</div>
             </div>
         </div>
@@ -960,7 +956,7 @@ select.custom-select {
             <p>Fiyat <span id="resFiyatKg" class="highlight"></span></p>
             <p>Gramaj <span id="resGramajKg" class="highlight"></span></p>
             <div class="box">
-                <p style="font-size:15px; font-weight:700; color:#27ae60;"><b>KG / LT Fiyatı</b> <span id="resKgFiyat" class="highlight" style="color:#27ae60;"></span></p>
+                <p style="font-size:15px; font-weight:700; color:#27ae60;"><b>KG - LT Fiyatı</b> <span id="resKgFiyat" class="highlight" style="color:#27ae60;"></span></p>
             </div>
         </div>
 
@@ -1038,6 +1034,11 @@ function formatParaGenel(sayi) {
     return sayi.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 4 });
 }
 
+function formatGramaj3Hane(sayi) {
+    if(isNaN(sayi) || sayi === null) return "0,000";
+    return sayi.toLocaleString("tr-TR", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+}
+
 function dynamicInputFormatEle(el) {
     let cursor = el.selectionStart;
     let originalLen = el.value.length;
@@ -1066,39 +1067,11 @@ function dynamicInputFormatEle(el) {
     el.setSelectionRange(cursor + diff, cursor + diff);
 }
 
-// 🟢 Veri girişi yapıldığında sonuç panelini kapatan ve butonu söndüren merkezi fonksiyon
-function kapatSonucPenceresi() {
-    let activeTab = document.querySelector(".tab-content.active");
-    if (activeTab) {
-        // Aktif tab içindeki sonuç penceresini gizle
-        let res = activeTab.querySelector(".result");
-        if (res) res.style.display = "none";
-        
-        // Aktif tab içindeki ana hesaplama butonunun yeşil ışığını söndür
-        let btn = activeTab.querySelector(".main-btn");
-        if (btn) btn.classList.remove("active-calc");
-    }
-}
-
 function registerDynamicFormat() {
     document.querySelectorAll('input[inputmode="decimal"]').forEach(inp => {
         if(!inp.dataset.formattedEvent) {
-            // Hem formatlama yap hem de veri girildiği için sonuç penceresini kapat
-            inp.addEventListener('input', function() { 
-                dynamicInputFormatEle(this); 
-                kapatSonucPenceresi();
-            });
+            inp.addEventListener('input', function() { dynamicInputFormatEle(this); });
             inp.dataset.formattedEvent = "true";
-        }
-    });
-
-    // Select kutularında seçim değiştiğinde de sonuç kapansın
-    document.querySelectorAll('select').forEach(sel => {
-        if(!sel.dataset.changeEvent) {
-            sel.addEventListener('change', function() {
-                kapatSonucPenceresi();
-            });
-            sel.dataset.changeEvent = "true";
         }
     });
 }
@@ -1107,26 +1080,24 @@ function registerDynamicFormat() {
 function aktifEtHesaplamaEfekti(btnId) {
     let b = document.getElementById(btnId);
     if(b) {
-        b.classList.add('active-calc'); // Hesapla butonunu kalıcı yeşil yapar (Veri girilene kadar)
+        b.classList.add('active-calc');
+        setTimeout(() => { b.classList.remove('active-calc'); }, 180);
     }
 }
 
-// 🔴 Reset tuşuna basıldığında 5 saniye kırmızı yakan zamanlayıcılı yapı
-let resetTimer = null;
+// Reset butonunun parlama efektini yöneten ve 5 saniye (5000ms) açık tutan fonksiyon
 function tetikleResetEfekti(btnId) {
     let b = document.getElementById(btnId);
     if(b) {
-        b.classList.add('active-reset');
-        
-        // Eğer önceden kalma aktif bir sayaç varsa temizle (üst üste basma durumu için)
-        if (b.dataset.timeoutId) {
+        // Eğer zaten çalışmakta olan eski bir sayaç varsa temizle ve sıfırla
+        if(b.dataset.timeoutId) {
             clearTimeout(parseInt(b.dataset.timeoutId));
         }
-        
+        b.classList.add('active-reset');
         let tId = setTimeout(() => { 
             b.classList.remove('active-reset'); 
-        }, 5000); // 5 saniye (5000 ms) boyunca yanık kalır
-        
+            b.removeAttribute('data-timeout-id');
+        }, 5000); // 5 saniye yanık kalması sağlandı
         b.dataset.timeoutId = tId;
     }
 }
@@ -1142,22 +1113,32 @@ function alanTemizleVeSondur(inpId, sonucAlanId, btnHesaplaId) {
 }
 
 /* ==========================================================================
-   KLAVYE NAVİGASYON YÖNETİMİ (ENTER & ESC KONTROLLERİ)
+   KLAVYE NAVİGASYON YÖNETİMİ (ENTER, ESC & SHIFT + ESC KONTROLLERİ)
    ========================================================================== */
 window.addEventListener("keydown", function(e) {
-    if (e.keyCode !== 13 && e.keyCode !== 27) return;
-
     let activeTab = document.querySelector(".tab-content.active");
     if (!activeTab) return;
+
+    // 🔴 Kısayol: Shift + Escape kombinasyonunu yakala ve aktif sayfanın reset butonunu tetikle
+    if (e.shiftKey && e.keyCode === 27) {
+        e.preventDefault();
+        let currentResetBtn = activeTab.querySelector(".reset-btn");
+        if(currentResetBtn) {
+            currentResetBtn.click();
+        }
+        return;
+    }
+
+    if (e.keyCode !== 13 && e.keyCode !== 27) return;
 
     let elements = Array.from(activeTab.querySelectorAll("input:not([readonly]):not([tabindex='-1']), select, .main-btn"));
     let current = document.activeElement;
     let currentIndex = elements.indexOf(current);
 
-    // 1. ENTER TUŞU İŞLEVİ
     if (e.keyCode === 13) {
         if (currentIndex !== -1) {
             let currentEl = elements[currentIndex];
+
             if (currentEl.classList.contains("main-btn")) return;
 
             e.preventDefault();
@@ -1165,7 +1146,9 @@ window.addEventListener("keydown", function(e) {
             let nextIndex = currentIndex + 1;
             if (nextIndex < elements.length) {
                 let nextEl = elements[nextIndex];
+                
                 nextEl.focus();
+                
                 if (nextEl.classList.contains("main-btn")) {
                     nextEl.click();
                 }
@@ -1173,7 +1156,6 @@ window.addEventListener("keydown", function(e) {
         }
     }
 
-    // 2. ESC TUŞU İŞLEVİ
     if (e.keyCode === 27) {
         if (currentIndex !== -1) {
             e.preventDefault();
@@ -1206,11 +1188,13 @@ function toggleDropdown(groupId) {
 
 function switchTab(tabId, focusId, element, indicatorText) {
     document.querySelectorAll(".dropdown-menu").forEach(m => m.classList.remove("open"));
+    
     document.querySelectorAll(".dropdown-item").forEach(item => item.classList.remove("active"));
     if(element) element.classList.add("active");
     
     document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
     document.getElementById(tabId).classList.add("active");
+    
     document.getElementById("pageIndicator").innerText = indicatorText;
     
     setTimeout(() => {
@@ -1239,7 +1223,6 @@ function degistirSatis(id, yon) {
     let idx = sel.selectedIndex + yon;
     if (idx >= 0 && idx < sel.options.length) {
         sel.selectedIndex = idx;
-        kapatSonucPenceresi(); // Stepper butonuna basıldığında da sonuç kapansın
     }
 }
 
@@ -1380,7 +1363,6 @@ function degistirIndirim(yon) {
     let idx = sel.selectedIndex + yon;
     if (idx >= 0 && idx < sel.options.length) {
         sel.selectedIndex = idx;
-        kapatSonucPenceresi();
     }
 }
 
@@ -1428,7 +1410,6 @@ function degistirKdvSecim(yon) {
     let idx = sel.selectedIndex + yon;
     if (idx >= 0 && idx < sel.options.length) {
         sel.selectedIndex = idx;
-        kapatSonucPenceresi();
     }
 }
 
@@ -1566,7 +1547,7 @@ function sifirlaKarsilastirma(e) {
 
 
 /* ==========================================================================
-   MODÜL: KG / LT FİYATI NEDİR
+   MODÜL: KG - LT FİYATI NEDİR
    ========================================================================== */
 function temizleKg(event, id) {
     if(event) event.preventDefault();
@@ -1577,10 +1558,10 @@ function hesaplaKg() {
     let fiyatVal = parseInputFloat(document.getElementById("fiyatKg").value);
     let gramajVal = parseInputFloat(document.getElementById("gramajKg").value);
     
-    let kgFiyatHesapli = (gramajVal > 0) ? ((fiyatVal / gramajVal) * 1000) : 0;
+    let kgFiyatHesapli = (gramajVal > 0) ? (fiyatVal / gramajVal) : 0;
     
     document.getElementById("resFiyatKg").innerText = formatParaGenel(fiyatVal) + " ₺";
-    document.getElementById("resGramajKg").innerText = formatParaGenel(gramajVal) + " gr/ml";
+    document.getElementById("resGramajKg").innerText = formatGramaj3Hane(gramajVal) + " KG - LT";
     document.getElementById("resKgFiyat").innerText = formatParaGenel(kgFiyatHesapli) + " ₺";
     
     document.getElementById("sonucKg").style.display = "block";
@@ -1750,7 +1731,6 @@ function satirTutarHesaplaFatura(id) {
     let fiyat = parseInputFloat(document.getElementById(`faturaFiyat_${id}`).value);
     let t = adet * fiyat;
     document.getElementById(`faturaTutar_${id}`).value = t > 0 ? formatParaGenel(t) + " ₺" : "";
-    kapatSonucPenceresi(); // Dinamik satırlarda veri değiştikçe de sonuç kapansın
 }
 
 function hesaplaFatura() {
