@@ -202,7 +202,10 @@ label{
     outline: none !important;
 }
 
-.stepper-container:focus-within {
+/* 🟢 Beyaz alana tıklansa da sönmeyen odak sınıfları */
+input.is-focused,
+select.is-focused,
+.stepper-container.is-focused {
     border-color: #8fd4ae !important;
     box-shadow: 0 0 0 4px rgba(143,212,174,0.45) !important;
     outline: none !important;
@@ -227,12 +230,6 @@ input:focus,
 select:focus {
     font-size: 16px !important;
     outline: none !important;
-}
-
-input:focus {
-    outline: none !important;
-    border-color: #8fd4ae !important;
-    box-shadow: 0 0 0 4px rgba(143,212,174,0.45) !important;
 }
 
 select.custom-select {
@@ -283,7 +280,8 @@ select.custom-select {
 .step-btn:active { background: #cbd5e1; }
 
 .main-btn{
-    flex:1;
+    width: 100%;
+    height:46px;
     background:#fff;
     color:#2c3e50;
     font-weight:600;
@@ -293,13 +291,11 @@ select.custom-select {
 }
 
 .main-btn:hover{ background:#f6f8fa; }
-.main-btn:focus, .main-btn:active{
-    outline:none;
-    border-color:#8fd4ae;
-    box-shadow:0 0 0 4px rgba(143,212,174,0.35);
-}
+.main-btn:focus, .main-btn:active { outline: none !important; }
 
-button.clicked-blue, .main-btn.active-calc{
+/* 🟢 Hesapla butonu yeşil yandığında beyaz alan tıklamalarıyla kesinlikle sönmez */
+.main-btn.active-calc{
+    outline: none !important;
     border-color:#8fd4ae !important;
     box-shadow:0 0 0 4px rgba(143,212,174,0.45) !important;
 }
@@ -1067,11 +1063,74 @@ function dynamicInputFormatEle(el) {
     el.setSelectionRange(cursor + diff, cursor + diff);
 }
 
+// 🟢 Tüm odak sınıflarını ve yeşil halkaları sıfırlayan yardımcı fonksiyon
+function tumOdakHalkalariniTemizle(activeTab) {
+    activeTab.querySelectorAll('input, select, .stepper-container').forEach(el => {
+        el.classList.remove('is-focused');
+    });
+}
+
+// 🟢 SÖNDÜRME TETİKLEYİCİSİ (Yalnızca inputa elle yeni veri girildiğinde veya seçildiğinde tetiklenir)
+function veriGirildiSifirla() {
+    let activeTab = document.querySelector(".tab-content.active");
+    if (!activeTab) return;
+    
+    let calcBtn = activeTab.querySelector(".main-btn");
+    if (calcBtn) {
+        calcBtn.classList.remove('active-calc');
+    }
+    
+    let results = activeTab.querySelectorAll(".result, .result-dinamik");
+    results.forEach(r => {
+        r.style.display = "none";
+    });
+}
+
+// 🟢 Gelişmiş Dinamik Dinleyiciler (Beyaz alan tıklamalarından etkilenmez)
 function registerDynamicFormat() {
     document.querySelectorAll('input[inputmode="decimal"]').forEach(inp => {
         if(!inp.dataset.formattedEvent) {
-            inp.addEventListener('input', function() { dynamicInputFormatEle(this); });
+            inp.addEventListener('input', function() { 
+                dynamicInputFormatEle(this); 
+                veriGirildiSifirla();
+            });
+
+            // Odaklanıldığında yeşil halkayı ekle ve diğer elemanların halkasını temizle
+            inp.addEventListener('focus', function() {
+                let activeTab = document.querySelector(".tab-content.active");
+                tumOdakHalkalariniTemizle(activeTab);
+                
+                // Eğer bir stepper içindeyse onun çerçevesini yakala
+                let stepContainer = this.closest('.stepper-container');
+                if (stepContainer) {
+                    stepContainer.classList.add('is-focused');
+                } else {
+                    this.classList.add('is-focused');
+                }
+            });
+
             inp.dataset.formattedEvent = "true";
+        }
+    });
+
+    document.querySelectorAll('select').forEach(sel => {
+        if(!sel.dataset.changeEvent) {
+            sel.addEventListener('change', function() {
+                veriGirildiSifirla();
+            });
+
+            sel.addEventListener('focus', function() {
+                let activeTab = document.querySelector(".tab-content.active");
+                tumOdakHalkalariniTemizle(activeTab);
+                
+                let stepContainer = this.closest('.stepper-container');
+                if (stepContainer) {
+                    stepContainer.classList.add('is-focused');
+                } else {
+                    this.classList.add('is-focused');
+                }
+            });
+            sel.dataset.changeEvent = "true";
         }
     });
 }
@@ -1081,7 +1140,6 @@ function aktifEtHesaplamaEfekti(btnId) {
     let b = document.getElementById(btnId);
     if(b) {
         b.classList.add('active-calc');
-        setTimeout(() => { b.classList.remove('active-calc'); }, 180);
     }
 }
 
@@ -1089,7 +1147,6 @@ function aktifEtHesaplamaEfekti(btnId) {
 function tetikleResetEfekti(btnId) {
     let b = document.getElementById(btnId);
     if(b) {
-        // Eğer zaten çalışmakta olan eski bir sayaç varsa temizle ve sıfırla
         if(b.dataset.timeoutId) {
             clearTimeout(parseInt(b.dataset.timeoutId));
         }
@@ -1097,15 +1154,24 @@ function tetikleResetEfekti(btnId) {
         let tId = setTimeout(() => { 
             b.classList.remove('active-reset'); 
             b.removeAttribute('data-timeout-id');
-        }, 5000); // 5 saniye yanık kalması sağlandı
+        }, 5000); 
         b.dataset.timeoutId = tId;
     }
 }
 
 function alanTemizleVeSondur(inpId, sonucAlanId, btnHesaplaId) {
     let inp = document.getElementById(inpId);
+    let activeTab = document.querySelector(".tab-content.active");
     if(inp) {
         inp.value = "";
+        tumOdakHalkalariniTemizle(activeTab);
+        
+        let stepContainer = inp.closest('.stepper-container');
+        if (stepContainer) {
+            stepContainer.classList.add('is-focused');
+        } else {
+            inp.classList.add('is-focused');
+        }
         inp.focus();
     }
     if(sonucAlanId) document.getElementById(sonucAlanId).style.display = "none";
@@ -1119,7 +1185,6 @@ window.addEventListener("keydown", function(e) {
     let activeTab = document.querySelector(".tab-content.active");
     if (!activeTab) return;
 
-    // 🔴 Kısayol: Shift + Escape kombinasyonunu yakala ve aktif sayfanın reset butonunu tetikle
     if (e.shiftKey && e.keyCode === 27) {
         e.preventDefault();
         let currentResetBtn = activeTab.querySelector(".reset-btn");
@@ -1138,17 +1203,13 @@ window.addEventListener("keydown", function(e) {
     if (e.keyCode === 13) {
         if (currentIndex !== -1) {
             let currentEl = elements[currentIndex];
-
             if (currentEl.classList.contains("main-btn")) return;
-
             e.preventDefault();
 
             let nextIndex = currentIndex + 1;
             if (nextIndex < elements.length) {
                 let nextEl = elements[nextIndex];
-                
                 nextEl.focus();
-                
                 if (nextEl.classList.contains("main-btn")) {
                     nextEl.click();
                 }
@@ -1157,8 +1218,15 @@ window.addEventListener("keydown", function(e) {
     }
 
     if (e.keyCode === 27) {
-        if (currentIndex !== -1) {
-            e.preventDefault();
+        e.preventDefault();
+        let calcBtn = activeTab.querySelector(".main-btn");
+        
+        if (current === calcBtn || currentIndex === -1 || current === document.body) {
+            let btnIndex = elements.indexOf(calcBtn);
+            if (btnIndex > 0) {
+                elements[btnIndex - 1].focus();
+            }
+        } else {
             let prevIndex = currentIndex - 1;
             if (prevIndex >= 0) {
                 elements[prevIndex].focus();
@@ -1193,16 +1261,23 @@ function switchTab(tabId, focusId, element, indicatorText) {
     if(element) element.classList.add("active");
     
     document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
-    document.getElementById(tabId).classList.add("active");
+    let targetTab = document.getElementById(tabId);
+    targetTab.classList.add("active");
     
     document.getElementById("pageIndicator").innerText = indicatorText;
     
+    // Geçişte eski tabın tüm odak halkalarını sıfırla
+    tumOdakHalkalariniTemizle(targetTab);
+    
     setTimeout(() => {
         let el = document.getElementById(focusId);
-        if(el) el.focus();
+        if(el) {
+            el.focus();
+        }
     }, 50);
 }
 
+// 🟢 Global tıklama kontrolü (Menü kapatır, halkaları ve buton durumunu asla bozmaz)
 window.addEventListener("click", function(e) {
     if (!e.target.matches('.tab-btn') && !e.target.matches('.dropdown-item') && !e.target.matches('.dropdown-menu')) {
         document.querySelectorAll(".dropdown-menu").forEach(m => m.classList.remove("open"));
@@ -1223,6 +1298,12 @@ function degistirSatis(id, yon) {
     let idx = sel.selectedIndex + yon;
     if (idx >= 0 && idx < sel.options.length) {
         sel.selectedIndex = idx;
+        
+        let activeTab = document.querySelector(".tab-content.active");
+        tumOdakHalkalariniTemizle(activeTab);
+        sel.closest('.stepper-container').classList.add('is-focused');
+        
+        veriGirildiSifirla();
     }
 }
 
@@ -1290,6 +1371,9 @@ function hesaplaSatis() {
     }
     
     document.getElementById("sonucSatis").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab); // Odaklanma kutusunu butona devreder
     aktifEtHesaplamaEfekti("hesaplaBtnSatis");
 }
 
@@ -1311,6 +1395,10 @@ function sifirlaSatis(e) {
     document.getElementById("sonucSatis").style.display = "none";
     document.getElementById('hesaplaBtnSatis').classList.remove('active-calc');
     tetikleResetEfekti("btnResetSatis");
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("brut").classList.add('is-focused');
     document.getElementById("brut").focus();
 }
 
@@ -1336,6 +1424,9 @@ function hesaplaKarGeri() {
     document.getElementById("anaFiyatKarGeri").innerText = formatParaGenel(anaFiyat) + " ₺";
     
     document.getElementById("sonucKarGeri").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnKarGeri");
 }
 
@@ -1346,6 +1437,10 @@ function sifirlaKarGeri(e) {
     document.getElementById("sonucKarGeri").style.display = "none";
     document.getElementById('hesaplaBtnKarGeri').classList.remove('active-calc');
     tetikleResetEfekti("btnResetKarGeri");
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("karGeriFiyat").classList.add('is-focused');
     document.getElementById("karGeriFiyat").focus();
 }
 
@@ -1363,6 +1458,12 @@ function degistirIndirim(yon) {
     let idx = sel.selectedIndex + yon;
     if (idx >= 0 && idx < sel.options.length) {
         sel.selectedIndex = idx;
+        
+        let activeTab = document.querySelector(".tab-content.active");
+        tumOdakHalkalariniTemizle(activeTab);
+        sel.closest('.stepper-container').classList.add('is-focused');
+        
+        veriGirildiSifirla();
     }
 }
 
@@ -1382,6 +1483,9 @@ function hesaplaIndirim() {
     document.getElementById("birim").innerText = formatParaGenel(indirimliTekFiyat) + " ₺";
     
     document.getElementById("sonucIndirim").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnIndirim");
 }
 
@@ -1393,6 +1497,10 @@ function sifirlaIndirim(e) {
     document.getElementById("sonucIndirim").style.display = "none";
     document.getElementById('hesaplaBtnIndirim').classList.remove('active-calc');
     tetikleResetEfekti("btnResetIndirim");
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("fiyat").classList.add('is-focused');
     document.getElementById("fiyat").focus();
 }
 
@@ -1410,6 +1518,12 @@ function degistirKdvSecim(yon) {
     let idx = sel.selectedIndex + yon;
     if (idx >= 0 && idx < sel.options.length) {
         sel.selectedIndex = idx;
+        
+        let activeTab = document.querySelector(".tab-content.active");
+        tumOdakHalkalariniTemizle(activeTab);
+        sel.closest('.stepper-container').classList.add('is-focused');
+        
+        veriGirildiSifirla();
     }
 }
 
@@ -1425,6 +1539,9 @@ function hesaplaKdv() {
     document.getElementById("haric").innerText = formatParaGenel(kdvHaricTutar) + " ₺";
     
     document.getElementById("sonucKdv").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnKdv");
 }
 
@@ -1435,6 +1552,10 @@ function sifirlaKdv(e) {
     document.getElementById("sonucKdv").style.display = "none";
     document.getElementById('hesaplaBtnKdv').classList.remove('active-calc');
     tetikleResetEfekti("btnResetKdv");
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("kdvDahil").classList.add('is-focused');
     document.getElementById("kdvDahil").focus();
 }
 
@@ -1461,6 +1582,9 @@ function hesaplaIlave() {
     document.getElementById("toplamSonucIlave").innerText = formatParaGenel(toplamSonuc) + " ₺";
     
     document.getElementById("sonucIlave").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnIlave");
 }
 
@@ -1471,6 +1595,10 @@ function sifirlaIlave(e) {
     document.getElementById("sonucIlave").style.display = "none";
     document.getElementById('hesaplaBtnIlave').classList.remove('active-calc');
     tetikleResetEfekti("btnResetIlave");
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("ilaveTutar").classList.add('is-focused');
     document.getElementById("ilaveTutar").focus();
 }
 
@@ -1496,6 +1624,9 @@ function hesaplaIndirimOran() {
     document.getElementById("resIndirimYuzde").innerText = "%" + formatParaGenel(indirimYuzdesi);
     
     document.getElementById("sonucIndirimOran").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnIndirimOran");
 }
 
@@ -1506,6 +1637,10 @@ function sifirlaIndirimOran(e) {
     document.getElementById("sonucIndirimOran").style.display = "none";
     document.getElementById('hesaplaBtnIndirimOran').classList.remove('active-calc');
     tetikleResetEfekti("btnResetIndirimOran");
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("eskiFiyat").classList.add('is-focused');
     document.getElementById("eskiFiyat").focus();
 }
 
@@ -1531,6 +1666,9 @@ function hesaplaKarsilastirma() {
     document.getElementById("resKarsilastirmaIndirim").innerText = "%" + formatParaGenel(avantajYuzde) + " DAHA AVANTAJLI";
     
     document.getElementById("sonucKarsilastirma").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnKarsilastirma");
 }
 
@@ -1542,6 +1680,10 @@ function sifirlaKarsilastirma(e) {
     document.getElementById("sonucKarsilastirma").style.display = "none";
     document.getElementById('hesaplaBtnKarsilastirma').classList.remove('active-calc');
     tetikleResetEfekti("btnResetKarsilastirma");
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("kutuFiyat").classList.add('is-focused');
     document.getElementById("kutuFiyat").focus();
 }
 
@@ -1565,6 +1707,9 @@ function hesaplaKg() {
     document.getElementById("resKgFiyat").innerText = formatParaGenel(kgFiyatHesapli) + " ₺";
     
     document.getElementById("sonucKg").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnKg");
 }
 
@@ -1575,6 +1720,10 @@ function sifirlaKg(e) {
     document.getElementById("sonucKg").style.display = "none";
     document.getElementById('hesaplaBtnKg').classList.remove('active-calc');
     tetikleResetEfekti("btnResetKg");
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("fiyatKg").classList.add('is-focused');
     document.getElementById("fiyatKg").focus();
 }
 
@@ -1616,6 +1765,9 @@ function hesaplaTopla() {
     });
     document.getElementById("toplaSonuc").innerText = formatParaGenel(toplam) + " ₺";
     document.getElementById("sonucAlaniTopla").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnTopla");
 }
 
@@ -1628,6 +1780,10 @@ function sifirlaTopla(e) {
     tetikleResetEfekti("btnResetTopla");
     kutuEkleTopla();
     kutuEkleTopla();
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("toplaSayi_1").classList.add('is-focused');
     document.getElementById("toplaSayi_1").focus();
 }
 
@@ -1676,6 +1832,9 @@ function hesaplaCikar() {
     
     document.getElementById("cikarSonuc").innerText = formatParaGenel(netKalan) + " ₺";
     document.getElementById("sonucAlaniCikar").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnCikar");
 }
 
@@ -1688,6 +1847,10 @@ function sifirlaCikar(e) {
     tetikleResetEfekti("btnResetCikar");
     kutuEkleCikar();
     kutuEkleCikar();
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("cikarSayi_1").classList.add('is-focused');
     document.getElementById("cikarSayi_1").focus();
 }
 
@@ -1731,6 +1894,7 @@ function satirTutarHesaplaFatura(id) {
     let fiyat = parseInputFloat(document.getElementById(`faturaFiyat_${id}`).value);
     let t = adet * fiyat;
     document.getElementById(`faturaTutar_${id}`).value = t > 0 ? formatParaGenel(t) + " ₺" : "";
+    veriGirildiSifirla();
 }
 
 function hesaplaFatura() {
@@ -1745,6 +1909,9 @@ function hesaplaFatura() {
     
     document.getElementById("faturaGenelToplam").innerText = formatParaGenel(gToplam) + " ₺";
     document.getElementById("sonucAlaniFatura").style.display = "block";
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
     aktifEtHesaplamaEfekti("hesaplaBtnFatura");
 }
 
@@ -1757,6 +1924,10 @@ function sifirlaFatura(e) {
     tetikleResetEfekti("btnResetFatura");
     satirEkleFatura();
     satirEkleFatura();
+    
+    let activeTab = document.querySelector(".tab-content.active");
+    tumOdakHalkalariniTemizle(activeTab);
+    document.getElementById("faturaAdet_1").classList.add('is-focused');
     document.getElementById("faturaAdet_1").focus();
 }
 
@@ -1778,7 +1949,10 @@ window.addEventListener("DOMContentLoaded", function() {
     
     setTimeout(() => {
         let brut = document.getElementById("brut");
-        if(brut) brut.focus();
+        if(brut) {
+            brut.classList.add('is-focused');
+            brut.focus();
+        }
     }, 200);
 });
 </script>
