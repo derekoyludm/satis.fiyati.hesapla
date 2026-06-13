@@ -1051,9 +1051,21 @@ select.custom-select {
    ========================================================================== */
 function parseInputFloat(val) {
     if(!val) return 0;
-    // Tümüyle güncellenmiş (hem boşluk hem nokta silen, virgülü noktaya çeviren) çeviri mekanizması
-    let clean = val.toString().replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
-    let f = parseFloat(clean);
+    
+    // Önce boşlukları temizle
+    let str = val.toString().replace(/\s/g, "");
+    
+    // Eğer hem nokta hem virgül varsa (Örn: 1.250,50)
+    if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, "").replace(",", ".");
+    } 
+    // Sadece virgül varsa (Örn: 15,5)
+    else if (str.includes(',')) {
+        str = str.replace(",", ".");
+    }
+    // Sadece nokta varsa (Örn: 1.5) string olduğu gibi kalır parseFloat doğru anlar.
+    
+    let f = parseFloat(str);
     return isNaN(f) ? 0 : f;
 }
 
@@ -1062,6 +1074,15 @@ function formatParaGenel(num) {
     let parts = num.toFixed(2).split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return parts.join(",");
+}
+
+/* 🟢 YENİ EKLENEN: Fiyat inputlarını dinamik olarak otomatik formatlama fonksiyonu */
+function formatInputEl(id) {
+    let el = document.getElementById(id);
+    if(el && el.value !== "") {
+        let val = parseInputFloat(el.value);
+        el.value = formatParaGenel(val);
+    }
 }
 
 function dynamicInputFormatSade(el) {
@@ -1393,6 +1414,8 @@ function degistirSatis(id, yon) {
 }
 
 function hesaplaSatis() {
+    formatInputEl("brut"); // Fiyatı formatla
+    
     let brut = parseInputFloat(document.getElementById("brut").value);
     let miktar = parseInputFloat(document.getElementById("miktar").value);
     let miktar2 = parseInputFloat(document.getElementById("miktar2").value);
@@ -1503,6 +1526,8 @@ function degistirIndirim(yon) {
 }
 
 function hesaplaIndirim() {
+    formatInputEl("fiyat"); // Fiyatı formatla
+    
     let fiyat = parseInputFloat(document.getElementById("fiyat").value);
     let adet = parseInputFloat(document.getElementById("adet").value);
     let isk = parseFloat(document.getElementById("indirim").value);
@@ -1546,6 +1571,8 @@ function temizleGeriGelme(e, id) {
 }
 
 function hesaplaGeriGelme() {
+    formatInputEl("geriFiyat"); // Fiyatı formatla
+    
     let fiyat = parseInputFloat(document.getElementById("geriFiyat").value);
     let oran = parseInputFloat(document.getElementById("geriOran").value);
     
@@ -1584,6 +1611,8 @@ function temizleIlave(e, id) {
 }
 
 function hesaplaIlave() {
+    formatInputEl("ilaveTutar"); // Fiyatı formatla
+    
     let tutar = parseInputFloat(document.getElementById("ilaveTutar").value);
     let yuzde = parseInputFloat(document.getElementById("ilaveYuzdeDegeri").value);
     
@@ -1632,6 +1661,8 @@ function degistirKdvSecim(yon) {
 }
 
 function hesaplaKdv() {
+    formatInputEl("kdvDahil"); // Fiyatı formatla
+    
     let fiyat = parseInputFloat(document.getElementById("kdvDahil").value);
     let kdv = parseFloat(document.getElementById("kdvSecim").value);
     
@@ -1669,6 +1700,9 @@ function temizleIndirimOran(e, id) {
 }
 
 function hesaplaIndirimOran() {
+    formatInputEl("eskiFiyat"); // Fiyatı formatla
+    formatInputEl("yeniFiyat"); // Fiyatı formatla
+    
     let eski = parseInputFloat(document.getElementById("eskiFiyat").value);
     let yeni = parseInputFloat(document.getElementById("yeniFiyat").value);
     
@@ -1707,6 +1741,9 @@ function temizleKarsilastirma(e, id) {
 }
 
 function hesaplaKarsilastirma() {
+    formatInputEl("kutuFiyat"); // Fiyatı formatla
+    formatInputEl("tekliFiyat"); // Fiyatı formatla
+    
     let kutuFiyat = parseInputFloat(document.getElementById("kutuFiyat").value);
     let adet = parseInputFloat(document.getElementById("adetKarsilastirma").value);
     let tekliFiyat = parseInputFloat(document.getElementById("tekliFiyat").value);
@@ -1750,7 +1787,7 @@ function sifirlaKarsilastirma(e) {
 }
 
 /* ==========================================================================
-   MODÜL 8: KG - LT FİYATI NEDİR (100 Eşik Değeriyle Güncellendi)
+   MODÜL 8: KG - LT FİYATI NEDİR
    ========================================================================== */
 function temizleKg(e, id) {
     if(e) e.preventDefault();
@@ -1758,24 +1795,27 @@ function temizleKg(e, id) {
 }
 
 function hesaplaKg() {
+    let gramajRaw = document.getElementById("gramajKg").value;
+
+    // Gramaj değerinde (.) kullanılmışsa hata uyarısı gösterip işlemi keselim.
+    if(gramajRaw.includes('.')) {
+        alert("Lütfen gramaj girişinde ondalık kısım için nokta (.) yerine virgül (,) kullanınız. (Örn: 0,001)");
+        return;
+    }
+
+    formatInputEl("fiyatKg"); // Fiyatı formatla
+    
     let fiyat = parseInputFloat(document.getElementById("fiyatKg").value);
-    let gramaj = parseInputFloat(document.getElementById("gramajKg").value);
+    let gramaj = parseInputFloat(gramajRaw);
     
     let kgFiyat = 0;
     let birimMetni = "";
     
     if(gramaj > 0) {
-        // EŞİK DEĞER MANTIĞI:
-        // Girilen rakam 100'den küçükse (Örn: 1.25, 5, 0.500) bunu KG/LT kabul et
-        if (gramaj < 100) {
-            kgFiyat = fiyat / gramaj;
-            birimMetni = gramaj.toString().replace('.', ',') + " kg / lt";
-        } 
-        // 100 ve üzeriyse (Örn: 250, 1250) bunu GR/ML kabul et ve 1000'e çarp
-        else {
-            kgFiyat = (fiyat / gramaj) * 1000;
-            birimMetni = formatParaGenel(gramaj) + " gr / ml";
-        }
+        // Doğrudan kg/lt olarak işleniyor (Eşik değeri kaldırıldı)
+        kgFiyat = fiyat / gramaj;
+        let gramajFormatli = gramaj.toString().replace('.', ',');
+        birimMetni = gramajFormatli + " kg / lt";
     }
     
     document.getElementById("resFiyatKg").innerText = formatParaGenel(fiyat) + " ₺";
@@ -1853,6 +1893,9 @@ function hesaplaFatura() {
     
     rows.forEach(row => {
         let idStr = row.id.split("_")[1];
+        
+        formatInputEl("faturaFiyat_" + idStr); // Fiyat alanlarını formatla
+        
         let adet = parseInputFloat(document.getElementById("faturaAdet_" + idStr).value);
         let fiyat = parseInputFloat(document.getElementById("faturaFiyat_" + idStr).value);
         let kdvYuzde = parseFloat(document.getElementById("faturaKdv_" + idStr).value);
@@ -1966,6 +2009,7 @@ function hesaplaIslem() {
     
     rows.forEach(row => {
         let idStr = row.id.split("_")[1];
+        
         let mod = document.getElementById("islemModBtn_" + idStr).innerText;
         let sayi = parseInputFloat(document.getElementById("islemSayi_" + idStr).value);
         
