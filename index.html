@@ -1414,16 +1414,18 @@ function hesaplaSatis() {
     netBirim = netBirim * (1 - isk3/100);
     netBirim = netBirim * (1 - isk4/100);
     
-    let carpanMiktar = 1;
+    // YENİ BÖLME MANTIĞI: Fiyatı çarpmak yerine içindeki adede bölüyoruz.
+    let bolenMiktar = 1;
     if(miktar > 0 && miktar2 > 0) {
-        carpanMiktar = miktar * miktar2;
+        bolenMiktar = miktar * miktar2;
     } else if(miktar > 0) {
-        carpanMiktar = miktar;
+        bolenMiktar = miktar;
     } else if(miktar2 > 0) {
-        carpanMiktar = miktar2;
+        bolenMiktar = miktar2;
     }
     
-    let netBirimMiktarli = netBirim * carpanMiktar;
+    let netBirimMiktarli = netBirim / bolenMiktar;
+    
     let karliBirim = netBirimMiktarli * (1 + karYuzde/100);
     let satisFiyatiKdvli = karliBirim * (1 + kdvYuzde/100);
     let alisFiyatiKdvli = netBirimMiktarli * (1 + kdvYuzde/100);
